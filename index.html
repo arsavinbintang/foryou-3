@@ -153,6 +153,7 @@ body, html {
     color: #fff;
     border: 2px solid #66B2FF;
     padding: 5px 18px;
+    font-family: 'Jost', sans-serif;
     font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
@@ -283,6 +284,7 @@ body, html {
     color: #fff;
     border: 2px solid #fff;
     padding: 6px 16px;
+    font-family: 'Jost', sans-serif;
     font-size: 1.3rem;
     font-weight: bold;
     cursor: pointer;
@@ -303,6 +305,101 @@ body, html {
     white-space: pre-wrap;
     min-height: 180px;
     margin-top: 5px;
+}
+
+#fireworks-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #02060f;
+    z-index: 30;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+#fireworks-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#fireworks-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    pointer-events: none;
+    padding: 0 6vw;
+}
+
+#fw-title {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2.8rem, 12vw, 6.5rem);
+    line-height: 1.1;
+    color: #fff;
+    text-wrap: balance;
+    text-shadow: 0 0 10px #ff7aa8, 0 0 30px #ff4f8b, 0 0 60px #ff2a6d;
+    animation: fwPop 1.8s ease-out both, fwGlow 2.6s ease-in-out 1.8s infinite;
+}
+
+#fw-name {
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #ffd6e5;
+    font-size: clamp(1rem, 4vw, 1.8rem);
+    margin-top: 14px;
+    text-shadow: 0 0 12px rgba(255, 79, 139, 0.8);
+    animation: fwFade 2s ease-out 1.2s both;
+}
+
+@keyframes fwPop {
+    0% { opacity: 0; transform: scale(0.4); }
+    60% { opacity: 1; transform: scale(1.12); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fwGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes fwFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#fw-continue {
+    position: absolute;
+    bottom: 6vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: rgba(255, 79, 139, 0.15);
+    border: 2px solid #ff7aa8;
+    color: #fff;
+    padding: 12px 36px;
+    font-family: 'Jost', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border-radius: 30px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease-in-out, background 0.2s;
+}
+
+#fw-continue.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#fw-continue:hover {
+    background: #ff4f8b;
 }
 
 #ending-screen {
@@ -368,8 +465,8 @@ body, html {
         <div id="dialogue-box">
             <div id="speaker-name">Narator</div>
             <div class="dialog-nav-container">
-                <button id="dialog-back" class="nav-btn" onclick="goBack(event)"><span>◀</span></button>
-                <button id="dialog-next" class="nav-btn" onclick="advanceDialogue(event)"><span>▶</span></button>
+                <button id="dialog-back" class="nav-btn" onclick="goBack(event)"><span>&lt;</span></button>
+                <button id="dialog-next" class="nav-btn" onclick="advanceDialogue(event)"><span>&gt;</span></button>
             </div>
             <div id="dialogue-text"></div>
         </div>
@@ -381,11 +478,20 @@ body, html {
 <div id="letter-screen">
     <div class="letter-paper">
         <div class="letter-nav-container">
-            <button id="letter-back" class="letter-nav-btn" onclick="goBack(event)">◀</button>
-            <button id="letter-next" class="letter-nav-btn" onclick="advanceLetter(event)">▶</button>
+            <button id="letter-back" class="letter-nav-btn" onclick="goBack(event)">&lt;</button>
+            <button id="letter-next" class="letter-nav-btn" onclick="advanceLetter(event)">&gt;</button>
         </div>
         <div id="letter-content"></div>
     </div>
+</div>
+
+<div id="fireworks-screen">
+    <canvas id="fireworks-canvas"></canvas>
+    <div id="fireworks-text">
+        <div id="fw-title">Selamat 16 Years Old</div>
+        <div id="fw-name">Sandrina</div>
+    </div>
+    <button id="fw-continue" onclick="showEnding()">Lanjut</button>
 </div>
 
 <div id="ending-screen">
@@ -459,6 +565,8 @@ let isTyping = false;
 let typeInterval = null;
 let isChoiceActive = false;
 let isTransitioning = false;
+let inFollowUp = false;
+let followUpIndex = 0;
 
 let currentLetterIdx = 0;
 let isLetterTyping = false;
@@ -479,7 +587,9 @@ const letterContentEl = document.getElementById('letter-content');
 const fadeBlackEl = document.getElementById('fade-black');
 const gameContainerEl = document.getElementById('game-container');
 const letterScreenEl = document.getElementById('letter-screen');
+const fireworksScreenEl = document.getElementById('fireworks-screen');
 const endingScreenEl = document.getElementById('ending-screen');
+const fwContinueBtn = document.getElementById('fw-continue');
 
 function startAudio() {
     if (audioStarted) return;
@@ -540,6 +650,11 @@ const story = [
         image: "junpei.png",
         question: "Gimana, lo janji bakal terus berpikir positif dan tetap semangat kan?",
         rejectionCount: 0,
+        followUp: [
+            "Nah, gitu dong! Itu baru Sandrina yang gue kenal! Tapi serius ya, lo nggak harus selalu kuat kok. Kadang cerita ke temen itu bukan tanda lemah.",
+            "Dulu gue juga sering ngerasa nggak berguna. Tapi ternyata ada aja orang yang diam-diam percaya sama kita. Dan buat kita semua, orang itu ya lo.",
+            "Udah ah, nanti gue keliatan terlalu sentimental di depan Akihiko-senpai. Pokoknya nikmatin pestanya, oke? Ada ramen tuh, buruan ambil sebelum abis!"
+        ],
         choices: [
             { text: "Iya, aku janji bakal selalu positif!", next: true },
             {
@@ -568,6 +683,11 @@ const story = [
         image: "akihiko.png",
         question: "Pertarunganmu yang sebenarnya baru dimulai. Janji padaku kau nggak akan pernah menyerah pada keadaan?",
         rejectionCount: 0,
+        followUp: [
+            "Bagus. Janji seorang petarung itu tidak boleh dilanggar.",
+            "Dulu aku terlalu fokus jadi kuat sampai lupa bahwa kuat itu bukan cuma soal otot. Kuat juga berarti berani minta tolong dan berani istirahat.",
+            "Kalau suatu hari kamu butuh partner latihan, atau cuma butuh teman lari pagi, bilang saja. Aku siap kapan pun."
+        ],
         choices: [
             { text: "Tentu, aku janji nggak akan nyerah.", next: true },
             {
@@ -596,6 +716,11 @@ const story = [
         image: "shinjiro.png",
         question: "Dan berhenti mencabuti kukumu saat stres! Janji kau nggak akan menyakiti dirimu sendiri dengan cabut kuku lagi?",
         rejectionCount: 0,
+        followUp: [
+            "...Hmph. Gitu aja susah banget diucapin. Tapi, bagus.",
+            "Dengar. Aku dulu juga sok kuat dan nggak mau dengerin siapa pun. Hasilnya, banyak hal yang kusesali. Jangan ikuti jalanku.",
+            "Kalau lagi stres, keluar jalan sebentar atau makan sesuatu yang enak. Intinya cari cara lain yang nggak menyakiti dirimu. Itu saja."
+        ],
         choices: [
             { text: "Iya, aku janji nggak bakal cabut kuku lagi.", next: true },
             {
@@ -619,6 +744,11 @@ const story = [
         image: "makoto.png",
         question: "Berjanjilah padaku untuk lebih menjaga diri sendiri dan beristirahat jika kau merasa lelah.",
         rejectionCount: 0,
+        followUp: [
+            "Terima kasih, Sandrina. Janji itu berarti banyak buatku.",
+            "Aku belajar bahwa ikatan dengan orang lain adalah sumber kekuatan terbesar. Kau tidak perlu membawa semuanya sendirian, karena kami semua ada di sini.",
+            "Kalau suatu hari kau merasa lelah, ingat saja bahwa istirahat bukan kegagalan. Itu bagian dari perjalanan."
+        ],
         choices: [
             { text: "Baik, aku janji bakal jaga diri.", next: true },
             {
@@ -647,6 +777,11 @@ const story = [
         image: "yukari.png",
         question: "Tolong jangan bikin dirimu menderita demi orang lain. Janji ya, kamu bakal mulai mencintai dirimu sendiri?",
         rejectionCount: 0,
+        followUp: [
+            "Yeay! Nah gitu dong, Sandrina! Aku seneng banget dengernya.",
+            "Kamu tau nggak, orang yang paling sering ngasih ke orang lain tuh biasanya yang paling lupa ngasih ke diri sendiri. Padahal kamu juga pantes banget disayang.",
+            "Mulai dari hal kecil aja dulu. Tidur cukup, makan teratur, dan sesekali beli sesuatu yang kamu suka. Itu juga bentuk sayang sama diri sendiri lho."
+        ],
         choices: [
             { text: "Janji, aku bakal belajar mencintai diriku.", next: true },
             {
@@ -680,6 +815,11 @@ const story = [
         image: "",
         question: "Janji sama aku, kamu bakal terus bertahan, tetap kuat, dan janji nggak akan pernah nyerah?",
         rejectionCount: 0,
+        followUp: [
+            "Makasih ya, San. Beneran, makasih udah mau janji. Aku lega banget dengernya.",
+            "Aku tau jalan ke depan nggak akan selalu mudah. Bakal ada hari yang berat, bakal ada orang yang bikin kesel. Tapi di hari-hari kayak gitu, kamu tinggal bilang aja ke aku, apa pun itu.",
+            "Kamu nggak harus selalu kuat di depan semua orang. Di depanku, kamu boleh jadi dirimu yang apa adanya."
+        ],
         choices: [
             { text: "Iya Arshavin, aku janji.", next: true },
             {
@@ -712,6 +852,9 @@ const letters = [
     "Mamma mia!\n\nHappy 16th Birthday! It's-a me, Mario! Keep jumping over those obstacles, woohoo! Here's a 1-Up Mushroom for you!\n\n- Mario (Super Mario Bros.)",
     "You have survived another year. Good.\n\nDo not let the burdens of others break your focus. Be better. Stay strong. Happy birthday, Sandrina.\n\n- Kratos (God of War)",
     "Happy Birthday, kid.\n\nThis world ain't easy, and people will test you. But you're strong. Take care of yourself out there, alright? Don't let 'em break you.\n\n- Arthur Morgan (Red Dead Redemption 2)",
+    "Duduklah sebentar, Sandrina. Mari kita minum teh.\n\nSelamat ulang tahun yang ke-16. Hidup itu seperti secangkir teh: butuh waktu untuk diseduh dan tidak bisa dipaksa hangat dalam sekejap. Kamu tidak perlu terburu-buru. Istirahat adalah bagian dari perjalanan, bukan penghalangnya.\n\n- Paman Iroh (Avatar: The Last Airbender)",
+    "Sandrina yang baik,\n\nSelamat ulang tahun ke-16. Kemampuan hanyalah bekal. Yang akan menunjukkan siapa dirimu sebenarnya adalah caramu memilih, terutama saat pilihan itu sulit. Dan ingatlah, berani meminta bantuan juga tanda keberanian.\n\n- Albus Dumbledore (Harry Potter)",
+    "Selamat ulang tahun, Sandrina.\n\nPerjalanan sepanjang apa pun selalu dimulai dari langkah kecil, dan tidak ada yang menuntutmu untuk berlari. Orang bijak tahu kapan harus bertahan dan kapan harus menerima uluran tangan. Kamu tidak akan sendirian di jalan ini.\n\n- Gandalf (The Lord of the Rings)",
     "San, ini aku lagi.\n\nAku cuma mau bilang kalau aku beruntung banget bisa kenal dan ada di sampingmu. Tolong jaga dirimu baik-baik, jangan pernah menyerah.\n\nI love you.\n- Arshavin"
 ];
 
@@ -744,6 +887,9 @@ function renderDialogue(idx) {
     const currentData = story[idx];
     if (!currentData) return;
 
+    inFollowUp = false;
+    followUpIndex = 0;
+
     if (currentData.type === 'choice') {
         currentData.isResolved = false;
         currentData.rejectionCount = 0;
@@ -768,6 +914,17 @@ function advanceDialogue(e) {
 
     startAudio();
     playClick();
+
+    if (inFollowUp) {
+        const data = story[currentLine];
+        followUpIndex++;
+        if (data && data.followUp && followUpIndex < data.followUp.length) {
+            typeWriter(data.followUp[followUpIndex]);
+            return;
+        }
+        inFollowUp = false;
+    }
+
     currentLine++;
 
     if (currentLine >= story.length) {
@@ -813,7 +970,15 @@ function showChoices(choiceData) {
             isChoiceActive = false;
 
             if (c.next) {
-                advanceDialogue();
+                choiceData.isResolved = true;
+                if (choiceData.followUp && choiceData.followUp.length > 0) {
+                    inFollowUp = true;
+                    followUpIndex = 0;
+                    speakerNameEl.textContent = choiceData.name;
+                    typeWriter(choiceData.followUp[0]);
+                } else {
+                    advanceDialogue();
+                }
                 return;
             }
 
@@ -891,12 +1056,16 @@ function advanceLetter(e) {
 
         setTimeout(() => {
             letterScreenEl.style.display = 'none';
-            endingScreenEl.style.display = 'flex';
+            fireworksScreenEl.style.display = 'flex';
             setTimeout(() => {
-                endingScreenEl.style.opacity = '1';
-                gameState = 'ENDING';
+                fireworksScreenEl.style.opacity = '1';
+                gameState = 'FIREWORKS';
                 isTransitioning = false;
                 updateNavButtons();
+                startFireworks();
+                setTimeout(() => {
+                    fwContinueBtn.classList.add('visible');
+                }, 6000);
             }, 100);
         }, 1500);
         return;
@@ -913,6 +1082,10 @@ function goBack(e) {
     playClick();
 
     if (gameState === 'DIALOGUE') {
+        if (inFollowUp) {
+            renderDialogue(currentLine);
+            return;
+        }
         if (currentLine > 0 && !isChoiceActive) {
             currentLine--;
             renderDialogue(currentLine);
@@ -938,6 +1111,249 @@ function goBack(e) {
         }
     }
 }
+
+const fwCanvas = document.getElementById('fireworks-canvas');
+const fwCtx = fwCanvas.getContext('2d');
+
+let fwWidth = 0;
+let fwHeight = 0;
+let fwRunning = false;
+let fwFrame = null;
+let fwLastRocket = 0;
+let fwLastHeart = 0;
+let fwRocketCount = 0;
+let fwRockets = [];
+let fwSparks = [];
+let fwHearts = [];
+
+function resizeFireworks() {
+    const dpr = window.devicePixelRatio || 1;
+    fwWidth = window.innerWidth;
+    fwHeight = window.innerHeight;
+    fwCanvas.width = Math.floor(fwWidth * dpr);
+    fwCanvas.height = Math.floor(fwHeight * dpr);
+    fwCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fwCtx.globalCompositeOperation = 'source-over';
+    fwCtx.fillStyle = '#02060f';
+    fwCtx.fillRect(0, 0, fwWidth, fwHeight);
+}
+
+function drawHeart(x, y, size, color, alpha) {
+    fwCtx.save();
+    fwCtx.globalAlpha = alpha;
+    fwCtx.fillStyle = color;
+    fwCtx.beginPath();
+    fwCtx.moveTo(x, y + size * 0.25);
+    fwCtx.bezierCurveTo(x, y, x - size * 0.5, y, x - size * 0.5, y + size * 0.25);
+    fwCtx.bezierCurveTo(x - size * 0.5, y + size * 0.5, x, y + size * 0.75, x, y + size);
+    fwCtx.bezierCurveTo(x, y + size * 0.75, x + size * 0.5, y + size * 0.5, x + size * 0.5, y + size * 0.25);
+    fwCtx.bezierCurveTo(x + size * 0.5, y, x, y, x, y + size * 0.25);
+    fwCtx.closePath();
+    fwCtx.fill();
+    fwCtx.restore();
+}
+
+function spawnHeart(scatter) {
+    fwHearts.push({
+        x: Math.random() * fwWidth,
+        y: scatter ? Math.random() * fwHeight : fwHeight + 30,
+        size: 14 + Math.random() * 26,
+        speed: 0.8 + Math.random() * 1.4,
+        sway: 0.3 + Math.random() * 0.6,
+        phase: Math.random() * Math.PI * 2,
+        alpha: 0.35 + Math.random() * 0.5,
+        hue: 335 + Math.random() * 30
+    });
+}
+
+function launchRocket() {
+    fwRocketCount++;
+    const heart = fwRocketCount % 3 === 0;
+    fwRockets.push({
+        x: fwWidth * (0.12 + Math.random() * 0.76),
+        y: fwHeight + 10,
+        vy: -(fwHeight * 0.012 + Math.random() * 2),
+        targetY: fwHeight * (0.18 + Math.random() * 0.32),
+        hue: heart ? 335 + Math.random() * 25 : Math.random() * 360,
+        heart: heart
+    });
+}
+
+function explode(x, y, hue, heart) {
+    const base = Math.min(fwWidth, fwHeight);
+
+    if (heart) {
+        const k = base * 0.00058;
+        const count = 72;
+        for (let i = 0; i < count; i++) {
+            const t = (i / count) * Math.PI * 2;
+            const hx = 16 * Math.pow(Math.sin(t), 3);
+            const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            fwSparks.push({
+                x: x,
+                y: y,
+                vx: hx * k,
+                vy: hy * k,
+                alpha: 1,
+                decay: 0.008 + Math.random() * 0.004,
+                hue: hue,
+                size: 2.6,
+                friction: 0.95,
+                gravity: 0.012
+            });
+        }
+    } else {
+        const count = 70 + Math.floor(Math.random() * 30);
+        const power = base * 0.0085;
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = power * 0.2 + Math.random() * power;
+            fwSparks.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 1,
+                decay: 0.012 + Math.random() * 0.012,
+                hue: hue + (Math.random() * 30 - 15),
+                size: 2,
+                friction: 0.96,
+                gravity: 0.03
+            });
+        }
+    }
+
+    if (fwSparks.length > 1400) {
+        fwSparks.splice(0, fwSparks.length - 1400);
+    }
+}
+
+function fireworksLoop(ts) {
+    if (!fwRunning) return;
+
+    fwCtx.globalCompositeOperation = 'source-over';
+    fwCtx.globalAlpha = 1;
+    fwCtx.fillStyle = 'rgba(2, 6, 15, 0.2)';
+    fwCtx.fillRect(0, 0, fwWidth, fwHeight);
+
+    if (ts - fwLastRocket > 650) {
+        launchRocket();
+        if (Math.random() < 0.35) launchRocket();
+        fwLastRocket = ts;
+    }
+
+    if (ts - fwLastHeart > 320) {
+        spawnHeart(false);
+        fwLastHeart = ts;
+    }
+
+    for (let i = fwHearts.length - 1; i >= 0; i--) {
+        const h = fwHearts[i];
+        h.y -= h.speed;
+        h.phase += 0.03;
+        h.x += Math.sin(h.phase) * h.sway;
+        if (h.y < -h.size - 10) {
+            fwHearts.splice(i, 1);
+            continue;
+        }
+        drawHeart(h.x, h.y, h.size, 'hsl(' + h.hue + ', 90%, 62%)', h.alpha);
+    }
+
+    fwCtx.globalCompositeOperation = 'lighter';
+
+    for (let i = fwRockets.length - 1; i >= 0; i--) {
+        const r = fwRockets[i];
+        r.y += r.vy;
+        fwCtx.globalAlpha = 1;
+        fwCtx.fillStyle = 'hsl(' + r.hue + ', 100%, 75%)';
+        fwCtx.beginPath();
+        fwCtx.arc(r.x, r.y, 2.2, 0, Math.PI * 2);
+        fwCtx.fill();
+        if (r.y <= r.targetY) {
+            explode(r.x, r.y, r.hue, r.heart);
+            fwRockets.splice(i, 1);
+        }
+    }
+
+    for (let i = fwSparks.length - 1; i >= 0; i--) {
+        const s = fwSparks[i];
+        s.vx *= s.friction;
+        s.vy *= s.friction;
+        s.vy += s.gravity;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.alpha -= s.decay;
+        if (s.alpha <= 0) {
+            fwSparks.splice(i, 1);
+            continue;
+        }
+        fwCtx.globalAlpha = s.alpha;
+        fwCtx.fillStyle = 'hsl(' + s.hue + ', 100%, 65%)';
+        fwCtx.beginPath();
+        fwCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        fwCtx.fill();
+    }
+
+    fwCtx.globalAlpha = 1;
+    fwCtx.globalCompositeOperation = 'source-over';
+
+    fwFrame = requestAnimationFrame(fireworksLoop);
+}
+
+function startFireworks() {
+    resizeFireworks();
+    fwRockets = [];
+    fwSparks = [];
+    fwHearts = [];
+    fwRocketCount = 0;
+    fwContinueBtn.classList.remove('visible');
+
+    for (let i = 0; i < 12; i++) {
+        spawnHeart(true);
+    }
+
+    const now = performance.now();
+    fwLastRocket = now - 600;
+    fwLastHeart = now;
+    fwRunning = true;
+    fwFrame = requestAnimationFrame(fireworksLoop);
+}
+
+function stopFireworks() {
+    fwRunning = false;
+    if (fwFrame) cancelAnimationFrame(fwFrame);
+    fwFrame = null;
+}
+
+function showEnding() {
+    if (gameState !== 'FIREWORKS' || isTransitioning) return;
+
+    isTransitioning = true;
+    playClick();
+    fireworksScreenEl.style.opacity = '0';
+
+    setTimeout(() => {
+        stopFireworks();
+        fireworksScreenEl.style.display = 'none';
+        endingScreenEl.style.display = 'flex';
+        setTimeout(() => {
+            endingScreenEl.style.opacity = '1';
+            gameState = 'ENDING';
+            isTransitioning = false;
+            updateNavButtons();
+        }, 100);
+    }, 1500);
+}
+
+fireworksScreenEl.addEventListener('pointerdown', (e) => {
+    if (gameState !== 'FIREWORKS' || e.target === fwContinueBtn) return;
+    const heart = Math.random() < 0.5;
+    explode(e.clientX, e.clientY, heart ? 335 + Math.random() * 25 : Math.random() * 360, heart);
+});
+
+window.addEventListener('resize', () => {
+    if (fwRunning) resizeFireworks();
+});
 </script>
 </body>
 </html>
