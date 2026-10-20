@@ -62,12 +62,12 @@ body, html {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background-image: url('background.png');
+    background-image: url('background.png'); 
     background-size: cover;
     background-position: center;
     display: none;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Memaksa konten ke bawah */
     align-items: center;
 }
 
@@ -97,20 +97,29 @@ body, html {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
 #back-btn:hover {
     background: #66B2FF;
     color: #000;
     transform: scale(1.05);
 }
 
+/* PEMBUNGKUS KARAKTER & DIALOG AGAR MENEMPEL */
+#bottom-ui {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 3vh;
+    z-index: 5;
+}
+
 #character-sprite {
-    position: absolute;
-    bottom: 12%;
-    left: 15%;
-    height: 80vh;
-    max-width: 45vw;
+    height: 55vh;
+    max-width: 90vw;
     object-fit: contain;
+    object-position: bottom center; /* Memaksa gambar rata bawah */
+    margin-bottom: -15px; /* Membuat gambar menumpuk sedikit di atas box */
     z-index: 3;
     transition: opacity 0.3s ease-in-out;
     filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
@@ -119,18 +128,16 @@ body, html {
 
 #dialogue-box {
     position: relative;
-    width: 85vw;
-    max-width: 1200px;
+    width: 90vw;
+    max-width: 1000px;
     height: 26vh;
     min-height: 160px;
-    background: linear-gradient(135deg, rgba(0, 30, 75, 0.95) 0%, rgba(0, 10, 30, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(0, 30, 75, 0.98) 0%, rgba(0, 10, 30, 0.98) 100%);
     border: 3px solid #66B2FF;
     border-radius: 4px;
-    margin-bottom: 2rem;
     padding: 1.8rem 2.5rem;
     z-index: 4;
     box-shadow: 0px 0px 25px rgba(102, 178, 255, 0.4);
-    cursor: pointer;
     display: flex;
     flex-direction: column;
 }
@@ -138,7 +145,7 @@ body, html {
 #speaker-name {
     position: absolute;
     top: -24px;
-    left: -15px;
+    left: -10px;
     background-color: #000;
     color: #fff;
     padding: 6px 28px;
@@ -149,6 +156,7 @@ body, html {
     letter-spacing: 2px;
     transform: skewX(-12deg);
     box-shadow: 3px 3px 0 #0044aa;
+    z-index: 5; /* Agar nama selalu di atas sprite */
 }
 
 #dialogue-text {
@@ -159,26 +167,36 @@ body, html {
     overflow-y: auto;
     flex-grow: 1;
     padding-right: 15px;
+    margin-bottom: 30px; /* Ruang untuk tombol lanjut */
 }
+#dialogue-text::-webkit-scrollbar { width: 6px; }
+#dialogue-text::-webkit-scrollbar-thumb { background: #66B2FF; border-radius: 3px; }
 
-#dialogue-text::-webkit-scrollbar {
-    width: 6px;
-}
-
-#dialogue-text::-webkit-scrollbar-thumb {
-    background: #66B2FF;
-    border-radius: 3px;
-}
-
-#next-indicator {
+/* TOMBOL LANJUT KHUSUS DIALOG */
+.btn-lanjut {
     position: absolute;
     bottom: 12px;
-    right: 25px;
+    right: 20px;
+    background: #000;
     color: #66B2FF;
+    border: 2px solid #66B2FF;
+    padding: 8px 25px;
+    font-size: 1.1rem;
+    font-family: 'Jost', sans-serif;
     font-weight: bold;
-    font-size: 1.4rem;
-    animation: blink 0.8s infinite;
-    display: none;
+    cursor: pointer;
+    transform: skewX(-10deg);
+    box-shadow: 2px 2px 0 #0044aa;
+    transition: all 0.2s;
+    display: none; /* Disembunyikan saat mengetik */
+    z-index: 10;
+}
+.btn-lanjut:hover {
+    background: #66B2FF;
+    color: #000;
+}
+.btn-lanjut:active {
+    transform: skewX(-10deg) scale(0.95);
 }
 
 @keyframes blink {
@@ -235,23 +253,25 @@ body, html {
     background: rgba(0, 0, 0, 0.9);
     z-index: 20;
     display: none;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
-    cursor: pointer;
 }
 
 .letter-paper {
     background: #fdfbf7;
     width: 90%;
     max-width: 650px;
-    padding: 50px 40px;
+    padding: 40px;
     border-radius: 4px;
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
     position: relative;
     color: #333;
     font-family: 'Caveat', cursive;
+    display: flex;
+    flex-direction: column;
 }
 
 .letter-paper::before {
@@ -268,16 +288,27 @@ body, html {
     line-height: 1.5;
     white-space: pre-wrap;
     margin-bottom: 20px;
+    min-height: 250px;
 }
 
-.letter-hint {
-    text-align: right;
+.btn-lanjut-surat {
+    align-self: flex-end;
+    background: #2b2b2b;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-size: 1.1rem;
     font-family: 'Jost', sans-serif;
-    font-size: 1.2rem;
-    color: #888;
-    margin-top: 20px;
-    animation: blink 1.5s infinite;
-    display: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.2s;
+    display: none; /* Disembunyikan saat mengetik */
+    z-index: 5;
+}
+.btn-lanjut-surat:hover {
+    background: #66B2FF;
+    color: #000;
 }
 
 #ending-screen {
@@ -304,10 +335,6 @@ body, html {
     background-color: #fff;
     object-fit: contain;
 }
-
-#ending-photo:hover {
-    transform: rotate(0deg) scale(1.02);
-}
 </style>
 </head>
 <body>
@@ -325,25 +352,30 @@ body, html {
 
 <button id="back-btn" onclick="goBack(event)">◀ KEMBALI</button>
 
-<div id="game-container" onclick="advanceDialogue()">
+<!-- KOTAK GAME UTAMA (Tidak bisa diklik sembarangan lagi) -->
+<div id="game-container">
     <div id="overlay"></div>
-    <img id="character-sprite" src="" alt="">
-
     <div id="choice-container"></div>
 
-    <div id="dialogue-box">
-        <div id="speaker-name">Narator</div>
-        <div id="dialogue-text"></div>
-        <div id="next-indicator">▼</div>
+    <div id="bottom-ui">
+        <img id="character-sprite" src="" alt="">
+        <div id="dialogue-box">
+            <div id="speaker-name">Narator</div>
+            <div id="dialogue-text"></div>
+            <!-- TOMBOL LANJUT DIALOG -->
+            <button id="btn-lanjut-dialog" class="btn-lanjut" onclick="advanceDialogue()">LANJUT ▶</button>
+        </div>
     </div>
 
     <div id="fade-black"></div>
 </div>
 
-<div id="letter-screen" onclick="advanceLetter()">
+<!-- KOTAK SURAT (Tidak bisa diklik sembarangan lagi) -->
+<div id="letter-screen">
     <div class="letter-paper">
         <div id="letter-content"></div>
-        <div class="letter-hint" id="letter-indicator">Tap layar untuk melanjutkan ▼</div>
+        <!-- TOMBOL LANJUT SURAT -->
+        <button id="btn-lanjut-surat" class="btn-lanjut-surat" onclick="advanceLetter()">LANJUT BACA ▶</button>
     </div>
 </div>
 
@@ -372,13 +404,13 @@ function preloadAssets() {
         finishLoading();
         return;
     }
-
+    
     assetsToLoad.forEach(src => {
         const img = new Image();
         img.onload = () => updateLoadingProgress();
         img.onerror = () => {
-            console.warn("Gagal memuat gambar: " + src + ". Pastikan nama file (huruf besar/kecil) persis sama di GitHub!");
-            updateLoadingProgress(); // Tetap jalan meskipun error agar tidak stuck
+            console.warn("Gagal memuat gambar: " + src + ". Pastikan nama file persis sama!");
+            updateLoadingProgress(); 
         };
         img.src = src;
     });
@@ -389,7 +421,7 @@ function updateLoadingProgress() {
     let percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
     document.getElementById('loading-percent').innerText = percent + "%";
     document.getElementById('loading-bar').style.width = percent + "%";
-
+    
     if (loadedAssets === assetsToLoad.length) {
         setTimeout(finishLoading, 500);
     }
@@ -401,11 +433,10 @@ function finishLoading() {
     setTimeout(() => {
         loader.style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
-        renderDialogue(currentLine); // Mulai game
+        renderDialogue(currentLine); 
     }, 500);
 }
 
-// Menjalankan preloader saat web dibuka
 window.onload = preloadAssets;
 // ---------------------------------
 
@@ -423,7 +454,7 @@ let currentLetterIdx = 0;
 let isLetterTyping = false;
 let letterInterval;
 
-let gameState = 'DIALOGUE';
+let gameState = 'DIALOGUE'; 
 
 function playClick() {
     clickSfx.currentTime = 0;
@@ -443,12 +474,12 @@ const story = [
     },
     {
         name: "Junpei Iori",
-        image: "junpei.png",
+        image: "junpei.png", 
         text: "Yo, Sandrina! Selamat ulang tahun ke-16 hari ini! Semoga sehat selalu ya! Lo beneran keren abis udah bertahan sejauh ini."
     },
     {
         name: "Junpei Iori",
-        image: "junpei.png",
+        image: "junpei.png", 
         text: "Denger-denger lo habis gendong teman-teman sekelompok lo yang beban itu ya? Gila, the real MVP! Tapi ingat, jangan sampai lo kelelahan sendiri."
     },
     {
@@ -459,8 +490,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya, aku janji bakal selalu positif!", next: true },
-            {
-                text: "Nggak tau deh, rasanya capek...",
+            { 
+                text: "Nggak tau deh, rasanya capek...", 
                 rejectTexts: [
                     "Heeei! Nggak ada kata nolak! Lo protagonis kita, jadi lo wajib janji buat terus semangat! Ayo bilang janji!",
                     "Ayolah Sandrina! Kalo lo pesimis terus, party kita bisa ikutan down! Plis janji dong, ya? Ya??",
@@ -487,8 +518,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Tentu, aku janji nggak akan nyerah.", next: true },
-            {
-                text: "Tapi aku pengen nyerah aja...",
+            { 
+                text: "Tapi aku pengen nyerah aja...", 
                 rejectTexts: [
                     "Hei! Aku tidak melatihmu untuk jadi pengecut! Kau harus berjanji padaku untuk terus berjuang!",
                     "Alasan lelah tidak kuterima! Kau punya potensi luar biasa. Tegakkan kepalamu dan berjanji sekarang!",
@@ -515,8 +546,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya, aku janji nggak bakal cabut kuku lagi.", next: true },
-            {
-                text: "Tapi kan refleks kalau lagi panik...",
+            { 
+                text: "Tapi kan refleks kalau lagi panik...", 
                 rejectTexts: [
                     "Jangan keras kepala! Jarimu bisa infeksi dan luka, bodoh! Cepat janji padaku sekarang!",
                     "Dengar, aku nggak akan membiarkanmu merusak dirimu sendiri. Hentikan kebiasaan jelek itu. Janji!",
@@ -538,8 +569,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Baik, aku janji bakal jaga diri.", next: true },
-            {
-                text: "Tugasnya masih banyak...",
+            { 
+                text: "Tugasnya masih banyak...", 
                 rejectTexts: [
                     "Aku tidak akan membiarkan percakapan ini berlanjut sebelum kau berjanji. Kau harus peduli pada dirimu sendiri.",
                     "Mengerjakan segalanya sendirian itu tidak akan membawamu ke mana-mana selain kehancuran. Aku tahu rasanya. Janji padaku.",
@@ -566,8 +597,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Janji, aku bakal belajar mencintai diriku.", next: true },
-            {
-                text: "Kayaknya susah deh...",
+            { 
+                text: "Kayaknya susah deh...", 
                 rejectTexts: [
                     "Ihhh Sandrina! Gak mau tau, pokoknya harus janji! Masa sama diri sendiri aja gak sayang? Ayo pencet janji!",
                     "Gak lucu tau memaksakan diri terus! Kamu itu berharga! Ayo bilang iya dan janji sama aku sekarang!",
@@ -599,8 +630,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya Arshavin, aku janji.", next: true },
-            {
-                text: "Aku bener-bener capek...",
+            { 
+                text: "Aku bener-bener capek...", 
                 rejectTexts: [
                     "Aku tau kamu capek, San. Tapi aku nggak bakal biarin kamu nyerah di sini. Ayo klik janji, aku yakin kamu kuat ngelewatin semuanya.",
                     "San, please... dengerin aku. Kamu nggak sendirian, ada aku di sini. Aku mohon, janjilah buat bertahan.",
@@ -635,12 +666,12 @@ const letters = [
 const speakerNameEl = document.getElementById('speaker-name');
 const dialogueTextEl = document.getElementById('dialogue-text');
 const characterSpriteEl = document.getElementById('character-sprite');
-const nextIndicator = document.getElementById('next-indicator');
 const dialogueBoxEl = document.getElementById('dialogue-box');
 const choiceContainer = document.getElementById('choice-container');
 const letterContentEl = document.getElementById('letter-content');
-const letterIndicatorEl = document.getElementById('letter-indicator');
 const backBtn = document.getElementById('back-btn');
+const btnLanjutDialog = document.getElementById('btn-lanjut-dialog');
+const btnLanjutSurat = document.getElementById('btn-lanjut-surat');
 
 function updateBackButton() {
     if (gameState === 'DIALOGUE' && currentLine > 0 && !isChoiceActive) {
@@ -654,21 +685,21 @@ function updateBackButton() {
 
 function renderDialogue(idx) {
     let currentData = story[idx];
-
+    
     if (currentData.type === 'choice') {
         currentData.isResolved = false;
         currentData.rejectionCount = 0;
     }
-
+    
     speakerNameEl.innerHTML = currentData.name;
-
+    
     if (currentData.image) {
         characterSpriteEl.src = currentData.image;
         characterSpriteEl.style.opacity = 1;
     } else {
         characterSpriteEl.style.opacity = 0;
     }
-
+    
     activeDialogueText = currentData.type === 'choice' ? currentData.question : currentData.text;
 
     typeWriter(activeDialogueText, () => {
@@ -680,14 +711,14 @@ function renderDialogue(idx) {
 }
 
 function advanceDialogue() {
-    if (isTyping || isChoiceActive) return;
-
+    if (isTyping || isChoiceActive) return; 
+    
     if (!audioStarted) {
         bgm.volume = 0.6;
         bgm.play().catch(()=>{});
         audioStarted = true;
     }
-
+    
     playClick();
     currentLine++;
 
@@ -695,7 +726,8 @@ function advanceDialogue() {
         document.getElementById('fade-black').style.opacity = '1';
         dialogueTextEl.innerHTML = "...";
         speakerNameEl.innerHTML = "";
-
+        btnLanjutDialog.style.display = 'none';
+        
         setTimeout(() => {
             document.getElementById('game-container').style.display = 'none';
             let letterScreen = document.getElementById('letter-screen');
@@ -717,18 +749,19 @@ function showChoices(choiceData) {
     isChoiceActive = true;
     choiceContainer.innerHTML = '';
     choiceContainer.style.display = 'flex';
-    updateBackButton();
-
+    btnLanjutDialog.style.display = 'none'; // Sembunyikan tombol lanjut saat milih
+    updateBackButton(); 
+    
     choiceData.choices.forEach(c => {
         let btn = document.createElement('button');
         btn.className = 'choice-btn';
         btn.innerText = c.text;
         btn.onclick = (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); 
             playClick();
             choiceContainer.style.display = 'none';
             isChoiceActive = false;
-
+            
             if (c.next) {
                 advanceDialogue();
             } else {
@@ -746,7 +779,8 @@ function showChoices(choiceData) {
                     activeDialogueText = c.rejectTexts[2];
                     speakerNameEl.innerHTML = choiceData.name;
                     typeWriter(activeDialogueText, () => {
-                        nextIndicator.style.display = 'block';
+                        // Tampilkan tombol lanjut karena sudah dipaksa
+                        btnLanjutDialog.style.display = 'block';
                         updateBackButton();
                     });
                 }
@@ -759,8 +793,8 @@ function showChoices(choiceData) {
 function typeWriter(text, callback) {
     isTyping = true;
     dialogueTextEl.innerHTML = '';
-    nextIndicator.style.display = 'none';
-
+    btnLanjutDialog.style.display = 'none'; // Sembunyikan selama ngetik
+    
     let i = 0;
     clearInterval(typeInterval);
     typeInterval = setInterval(() => {
@@ -773,20 +807,23 @@ function typeWriter(text, callback) {
             if (callback) {
                 callback();
             } else {
-                nextIndicator.style.display = 'block';
+                // Tampilkan tombol lanjut HANYA kalau bukan pertanyaan pilihan ganda
+                if(story[currentLine].type !== 'choice' || story[currentLine].isResolved) {
+                    btnLanjutDialog.style.display = 'block';
+                }
             }
         }
-    }, 18);
+    }, 18); // Kecepatan 1.5x
 }
 
 function renderLetter(idx) {
     letterContentEl.innerHTML = '';
-    letterIndicatorEl.style.display = 'none';
-
+    btnLanjutSurat.style.display = 'none';
+    
     isLetterTyping = true;
     let text = letters[idx];
     let i = 0;
-
+    
     clearInterval(letterInterval);
     letterInterval = setInterval(() => {
         letterContentEl.innerHTML += text.charAt(i);
@@ -794,14 +831,14 @@ function renderLetter(idx) {
         if (i >= text.length) {
             clearInterval(letterInterval);
             isLetterTyping = false;
-            letterIndicatorEl.style.display = 'block';
+            btnLanjutSurat.style.display = 'block'; // Tampilkan setelah teks selesai
         }
     }, 18);
     updateBackButton();
 }
 
 function advanceLetter() {
-    if (isLetterTyping) return;
+    if (isLetterTyping) return; 
     playClick();
 
     currentLetterIdx++;
@@ -810,7 +847,7 @@ function advanceLetter() {
         let letterScreen = document.getElementById('letter-screen');
         letterScreen.style.opacity = '0';
         backBtn.style.display = 'none';
-
+        
         setTimeout(() => {
             letterScreen.style.display = 'none';
             let endingScreen = document.getElementById('ending-screen');
@@ -828,7 +865,7 @@ function advanceLetter() {
 
 function goBack(e) {
     e.stopPropagation();
-    if (isTyping || isLetterTyping) return;
+    if (isTyping || isLetterTyping) return; 
     playClick();
 
     if (gameState === 'DIALOGUE') {
@@ -843,7 +880,7 @@ function goBack(e) {
         } else {
             let letterScreen = document.getElementById('letter-screen');
             letterScreen.style.opacity = '0';
-
+            
             setTimeout(() => {
                 letterScreen.style.display = 'none';
                 document.getElementById('game-container').style.display = 'flex';
