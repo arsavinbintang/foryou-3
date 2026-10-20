@@ -67,7 +67,7 @@ body, html {
     background-position: center;
     display: none;
     flex-direction: column;
-    justify-content: flex-end; /* Memaksa konten ke bawah */
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -78,32 +78,7 @@ body, html {
     z-index: 1;
 }
 
-#back-btn {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: rgba(0, 15, 40, 0.8);
-    color: #66B2FF;
-    border: 2px solid #66B2FF;
-    padding: 10px 20px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    font-family: 'Jost', sans-serif;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 50;
-    display: none;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-#back-btn:hover {
-    background: #66B2FF;
-    color: #000;
-    transform: scale(1.05);
-}
-
-/* PEMBUNGKUS KARAKTER & DIALOG AGAR MENEMPEL */
+/* PEMBUNGKUS KARAKTER & DIALOG */
 #bottom-ui {
     position: relative;
     width: 100%;
@@ -118,8 +93,8 @@ body, html {
     height: 55vh;
     max-width: 90vw;
     object-fit: contain;
-    object-position: bottom center; /* Memaksa gambar rata bawah */
-    margin-bottom: -15px; /* Membuat gambar menumpuk sedikit di atas box */
+    object-position: bottom center; 
+    margin-bottom: -15px; 
     z-index: 3;
     transition: opacity 0.3s ease-in-out;
     filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
@@ -156,7 +131,39 @@ body, html {
     letter-spacing: 2px;
     transform: skewX(-12deg);
     box-shadow: 3px 3px 0 #0044aa;
-    z-index: 5; /* Agar nama selalu di atas sprite */
+    z-index: 5;
+}
+
+/* NAVIGASI KANAN ATAS DIALOG (< >) */
+.dialog-nav-container {
+    position: absolute;
+    top: -24px;
+    right: -10px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+}
+
+.nav-btn {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #66B2FF;
+    padding: 5px 18px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    transform: skewX(-12deg);
+    box-shadow: 3px 3px 0 #0044aa;
+    transition: all 0.2s;
+    display: none;
+}
+.nav-btn:hover {
+    background-color: #66B2FF;
+    color: #000;
+}
+.nav-btn span {
+    display: inline-block;
+    transform: skewX(12deg); /* Meluruskan kembali simbol < > */
 }
 
 #dialogue-text {
@@ -167,37 +174,9 @@ body, html {
     overflow-y: auto;
     flex-grow: 1;
     padding-right: 15px;
-    margin-bottom: 30px; /* Ruang untuk tombol lanjut */
 }
 #dialogue-text::-webkit-scrollbar { width: 6px; }
 #dialogue-text::-webkit-scrollbar-thumb { background: #66B2FF; border-radius: 3px; }
-
-/* TOMBOL LANJUT KHUSUS DIALOG */
-.btn-lanjut {
-    position: absolute;
-    bottom: 12px;
-    right: 20px;
-    background: #000;
-    color: #66B2FF;
-    border: 2px solid #66B2FF;
-    padding: 8px 25px;
-    font-size: 1.1rem;
-    font-family: 'Jost', sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    transform: skewX(-10deg);
-    box-shadow: 2px 2px 0 #0044aa;
-    transition: all 0.2s;
-    display: none; /* Disembunyikan saat mengetik */
-    z-index: 10;
-}
-.btn-lanjut:hover {
-    background: #66B2FF;
-    color: #000;
-}
-.btn-lanjut:active {
-    transform: skewX(-10deg) scale(0.95);
-}
 
 @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -283,32 +262,40 @@ body, html {
     pointer-events: none;
 }
 
+/* NAVIGASI KANAN ATAS SURAT (< >) */
+.letter-nav-container {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.letter-nav-btn {
+    background-color: #2b2b2b;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 8px 18px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    display: none;
+}
+.letter-nav-btn:hover {
+    background-color: #e63946;
+    color: #fff;
+}
+
 #letter-content {
     font-size: 2rem;
     line-height: 1.5;
     white-space: pre-wrap;
-    margin-bottom: 20px;
     min-height: 250px;
-}
-
-.btn-lanjut-surat {
-    align-self: flex-end;
-    background: #2b2b2b;
-    color: #fff;
-    border: none;
-    padding: 10px 25px;
-    font-size: 1.1rem;
-    font-family: 'Jost', sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: all 0.2s;
-    display: none; /* Disembunyikan saat mengetik */
-    z-index: 5;
-}
-.btn-lanjut-surat:hover {
-    background: #66B2FF;
-    color: #000;
+    margin-top: 10px;
 }
 
 #ending-screen {
@@ -350,9 +337,7 @@ body, html {
     </div>
 </div>
 
-<button id="back-btn" onclick="goBack(event)">◀ KEMBALI</button>
-
-<!-- KOTAK GAME UTAMA (Tidak bisa diklik sembarangan lagi) -->
+<!-- KOTAK GAME UTAMA -->
 <div id="game-container">
     <div id="overlay"></div>
     <div id="choice-container"></div>
@@ -361,21 +346,27 @@ body, html {
         <img id="character-sprite" src="" alt="">
         <div id="dialogue-box">
             <div id="speaker-name">Narator</div>
+            <!-- Tombol Navigasi Dialog < > -->
+            <div class="dialog-nav-container">
+                <button id="dialog-back" class="nav-btn" onclick="goBack(event)"><span>◀</span></button>
+                <button id="dialog-next" class="nav-btn" onclick="advanceDialogue(event)"><span>▶</span></button>
+            </div>
             <div id="dialogue-text"></div>
-            <!-- TOMBOL LANJUT DIALOG -->
-            <button id="btn-lanjut-dialog" class="btn-lanjut" onclick="advanceDialogue()">LANJUT ▶</button>
         </div>
     </div>
 
     <div id="fade-black"></div>
 </div>
 
-<!-- KOTAK SURAT (Tidak bisa diklik sembarangan lagi) -->
+<!-- KOTAK SURAT -->
 <div id="letter-screen">
     <div class="letter-paper">
+        <!-- Tombol Navigasi Surat < > -->
+        <div class="letter-nav-container">
+            <button id="letter-back" class="letter-nav-btn" onclick="goBack(event)">◀</button>
+            <button id="letter-next" class="letter-nav-btn" onclick="advanceLetter(event)">▶</button>
+        </div>
         <div id="letter-content"></div>
-        <!-- TOMBOL LANJUT SURAT -->
-        <button id="btn-lanjut-surat" class="btn-lanjut-surat" onclick="advanceLetter()">LANJUT BACA ▶</button>
     </div>
 </div>
 
@@ -456,9 +447,46 @@ let letterInterval;
 
 let gameState = 'DIALOGUE'; 
 
+const dialogBackBtn = document.getElementById('dialog-back');
+const dialogNextBtn = document.getElementById('dialog-next');
+const letterBackBtn = document.getElementById('letter-back');
+const letterNextBtn = document.getElementById('letter-next');
+
+const speakerNameEl = document.getElementById('speaker-name');
+const dialogueTextEl = document.getElementById('dialogue-text');
+const characterSpriteEl = document.getElementById('character-sprite');
+const choiceContainer = document.getElementById('choice-container');
+const letterContentEl = document.getElementById('letter-content');
+
 function playClick() {
     clickSfx.currentTime = 0;
     clickSfx.play().catch(()=>{});
+}
+
+function updateNavButtons() {
+    if (gameState === 'DIALOGUE') {
+        // Tombol Kembali (<) Dialog
+        if (currentLine > 0 && !isChoiceActive) {
+            dialogBackBtn.style.display = 'block';
+        } else {
+            dialogBackBtn.style.display = 'none';
+        }
+        
+        // Tombol Lanjut (>) Dialog
+        if (!isTyping && !isChoiceActive && (story[currentLine].type !== 'choice' || story[currentLine].isResolved)) {
+            dialogNextBtn.style.display = 'block';
+        } else {
+            dialogNextBtn.style.display = 'none';
+        }
+    } else if (gameState === 'LETTER') {
+        letterBackBtn.style.display = 'block';
+        
+        if (!isLetterTyping) {
+            letterNextBtn.style.display = 'block';
+        } else {
+            letterNextBtn.style.display = 'none';
+        }
+    }
 }
 
 const story = [
@@ -663,26 +691,6 @@ const letters = [
     "San, ini aku lagi.\n\nAku cuma mau bilang kalau aku beruntung banget bisa kenal dan ada di sampingmu. Tolong jaga dirimu baik-baik, jangan pernah menyerah.\n\nI love you.\n- Arshavin"
 ];
 
-const speakerNameEl = document.getElementById('speaker-name');
-const dialogueTextEl = document.getElementById('dialogue-text');
-const characterSpriteEl = document.getElementById('character-sprite');
-const dialogueBoxEl = document.getElementById('dialogue-box');
-const choiceContainer = document.getElementById('choice-container');
-const letterContentEl = document.getElementById('letter-content');
-const backBtn = document.getElementById('back-btn');
-const btnLanjutDialog = document.getElementById('btn-lanjut-dialog');
-const btnLanjutSurat = document.getElementById('btn-lanjut-surat');
-
-function updateBackButton() {
-    if (gameState === 'DIALOGUE' && currentLine > 0 && !isChoiceActive) {
-        backBtn.style.display = 'block';
-    } else if (gameState === 'LETTER') {
-        backBtn.style.display = 'block';
-    } else {
-        backBtn.style.display = 'none';
-    }
-}
-
 function renderDialogue(idx) {
     let currentData = story[idx];
     
@@ -702,15 +710,16 @@ function renderDialogue(idx) {
     
     activeDialogueText = currentData.type === 'choice' ? currentData.question : currentData.text;
 
+    updateNavButtons();
     typeWriter(activeDialogueText, () => {
         if (currentData.type === 'choice') {
             showChoices(currentData);
         }
     });
-    updateBackButton();
 }
 
-function advanceDialogue() {
+function advanceDialogue(e) {
+    if (e) e.stopPropagation();
     if (isTyping || isChoiceActive) return; 
     
     if (!audioStarted) {
@@ -726,7 +735,7 @@ function advanceDialogue() {
         document.getElementById('fade-black').style.opacity = '1';
         dialogueTextEl.innerHTML = "...";
         speakerNameEl.innerHTML = "";
-        btnLanjutDialog.style.display = 'none';
+        updateNavButtons();
         
         setTimeout(() => {
             document.getElementById('game-container').style.display = 'none';
@@ -749,8 +758,7 @@ function showChoices(choiceData) {
     isChoiceActive = true;
     choiceContainer.innerHTML = '';
     choiceContainer.style.display = 'flex';
-    btnLanjutDialog.style.display = 'none'; // Sembunyikan tombol lanjut saat milih
-    updateBackButton(); 
+    updateNavButtons(); 
     
     choiceData.choices.forEach(c => {
         let btn = document.createElement('button');
@@ -779,9 +787,7 @@ function showChoices(choiceData) {
                     activeDialogueText = c.rejectTexts[2];
                     speakerNameEl.innerHTML = choiceData.name;
                     typeWriter(activeDialogueText, () => {
-                        // Tampilkan tombol lanjut karena sudah dipaksa
-                        btnLanjutDialog.style.display = 'block';
-                        updateBackButton();
+                        updateNavButtons();
                     });
                 }
             }
@@ -793,7 +799,7 @@ function showChoices(choiceData) {
 function typeWriter(text, callback) {
     isTyping = true;
     dialogueTextEl.innerHTML = '';
-    btnLanjutDialog.style.display = 'none'; // Sembunyikan selama ngetik
+    updateNavButtons();
     
     let i = 0;
     clearInterval(typeInterval);
@@ -804,23 +810,17 @@ function typeWriter(text, callback) {
         if (i >= text.length) {
             clearInterval(typeInterval);
             isTyping = false;
-            if (callback) {
-                callback();
-            } else {
-                // Tampilkan tombol lanjut HANYA kalau bukan pertanyaan pilihan ganda
-                if(story[currentLine].type !== 'choice' || story[currentLine].isResolved) {
-                    btnLanjutDialog.style.display = 'block';
-                }
-            }
+            updateNavButtons();
+            if (callback) callback();
         }
-    }, 18); // Kecepatan 1.5x
+    }, 18); 
 }
 
 function renderLetter(idx) {
     letterContentEl.innerHTML = '';
-    btnLanjutSurat.style.display = 'none';
-    
     isLetterTyping = true;
+    updateNavButtons();
+    
     let text = letters[idx];
     let i = 0;
     
@@ -831,22 +831,28 @@ function renderLetter(idx) {
         if (i >= text.length) {
             clearInterval(letterInterval);
             isLetterTyping = false;
-            btnLanjutSurat.style.display = 'block'; // Tampilkan setelah teks selesai
+            updateNavButtons();
         }
     }, 18);
-    updateBackButton();
 }
 
-function advanceLetter() {
+function advanceLetter(e) {
+    if (e) e.stopPropagation();
     if (isLetterTyping) return; 
+    
+    if (!audioStarted) {
+        bgm.volume = 0.6;
+        bgm.play().catch(()=>{});
+        audioStarted = true;
+    }
+    
     playClick();
-
     currentLetterIdx++;
 
     if (currentLetterIdx >= letters.length) {
         let letterScreen = document.getElementById('letter-screen');
         letterScreen.style.opacity = '0';
-        backBtn.style.display = 'none';
+        updateNavButtons();
         
         setTimeout(() => {
             letterScreen.style.display = 'none';
@@ -864,8 +870,15 @@ function advanceLetter() {
 }
 
 function goBack(e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (isTyping || isLetterTyping) return; 
+    
+    if (!audioStarted) {
+        bgm.volume = 0.6;
+        bgm.play().catch(()=>{});
+        audioStarted = true;
+    }
+    
     playClick();
 
     if (gameState === 'DIALOGUE') {
