@@ -6,448 +6,220 @@
 <title>Happy 16th Birthday Sandrina</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body, html {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
+    width: 100vw; height: 100vh; height: 100dvh;
     font-family: 'Jost', sans-serif;
-    background-color: #000;
-    overflow: hidden;
-    user-select: none;
+    background-color: #000; overflow: hidden; user-select: none;
 }
 
 #loading-screen {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #001122;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #66B2FF;
-    transition: opacity 0.5s ease-in-out;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #001122; z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #66B2FF; transition: opacity 0.5s ease-in-out;
 }
-
-#loading-text {
-    font-size: 2rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    text-align: center;
-    animation: blink 1s infinite;
-}
-
-.loading-bar-container {
-    width: 300px;
-    max-width: 80vw;
-    height: 10px;
-    background: #002b5e;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 1px solid #66B2FF;
-}
-
-#loading-bar {
-    width: 0%;
-    height: 100%;
-    background: #66B2FF;
-    transition: width 0.3s;
-}
+#loading-text { font-size: 2rem; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; text-align: center; animation: blink 1s infinite; }
+.loading-bar-container { width: 300px; max-width: 80vw; height: 10px; background: #002b5e; border-radius: 5px; overflow: hidden; border: 1px solid #66B2FF; }
+#loading-bar { width: 0%; height: 100%; background: #66B2FF; transition: width 0.3s; }
 
 #game-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    background-image: url('background.png');
-    background-size: cover;
-    background-position: center;
-    display: none;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
+    position: relative; width: 100vw; height: 100vh; height: 100dvh;
+    overflow: hidden; display: none; flex-direction: column;
+    justify-content: flex-end; align-items: center; background-color: #000;
 }
-
+.bg-layer {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    transition: opacity 1.2s ease-in-out; opacity: 0; z-index: 0;
+}
 #overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(180deg, rgba(0, 15, 35, 0.3) 0%, rgba(0, 10, 25, 0.6) 100%);
-    z-index: 1;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(0, 15, 35, 0.25) 0%, rgba(0, 10, 25, 0.62) 100%);
+    z-index: 1; pointer-events: none;
 }
-
-#bottom-ui {
-    position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 3vh;
-    z-index: 5;
-}
-
+#bottom-ui { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 3vh; z-index: 5; }
 #character-sprite {
-    height: 55vh;
-    max-width: 90vw;
-    object-fit: contain;
-    object-position: bottom center;
-    margin-bottom: -15px;
-    z-index: 3;
-    transition: opacity 0.3s ease-in-out;
-    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.8));
-    opacity: 0;
+    height: 55vh; max-width: 90vw; object-fit: contain; object-position: bottom center;
+    margin-bottom: -15px; z-index: 3; transition: opacity 0.35s ease-in-out;
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.8)); opacity: 0;
 }
-
 #dialogue-box {
-    position: relative;
-    width: 90vw;
-    max-width: 1000px;
-    height: 26vh;
-    min-height: 160px;
+    position: relative; width: 90vw; max-width: 1000px; height: 26vh; min-height: 160px;
     background: linear-gradient(135deg, rgba(0, 30, 75, 0.98) 0%, rgba(0, 10, 30, 0.98) 100%);
-    border: 3px solid #66B2FF;
-    border-radius: 4px;
-    padding: 1.8rem 2.5rem;
-    z-index: 4;
-    box-shadow: 0px 0px 25px rgba(102, 178, 255, 0.4);
-    display: flex;
-    flex-direction: column;
+    border: 3px solid #66B2FF; border-radius: 4px; padding: 1.8rem 2.5rem;
+    z-index: 4; box-shadow: 0px 0px 25px rgba(102, 178, 255, 0.4);
+    display: flex; flex-direction: column;
 }
-
 #speaker-name {
-    position: absolute;
-    top: -24px;
-    left: -10px;
-    background-color: #000;
-    color: #fff;
-    padding: 6px 28px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    border: 2px solid #66B2FF;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transform: skewX(-12deg);
-    box-shadow: 3px 3px 0 #0044aa;
-    z-index: 5;
+    position: absolute; top: -24px; left: -10px;
+    background-color: #000; color: #fff; padding: 5px 22px;
+    font-size: 1.3rem; font-weight: bold; border: 2px solid #66B2FF;
+    text-transform: uppercase; letter-spacing: 2px;
+    transform: skewX(-12deg); box-shadow: 3px 3px 0 #0044aa; z-index: 5;
+    max-width: calc(100% - 130px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-.dialog-nav-container {
-    position: absolute;
-    top: -24px;
-    right: -10px;
-    display: flex;
-    gap: 5px;
-    z-index: 10;
-}
-
+.dialog-nav-container { position: absolute; top: -22px; right: -8px; display: flex; gap: 4px; z-index: 10; }
 .nav-btn {
-    background-color: #000;
-    color: #fff;
-    border: 2px solid #66B2FF;
-    padding: 5px 18px;
-    font-family: 'Jost', sans-serif;
-    font-size: 1.4rem;
-    font-weight: bold;
-    cursor: pointer;
-    transform: skewX(-12deg);
-    box-shadow: 3px 3px 0 #0044aa;
-    transition: all 0.2s;
-    display: none;
+    background-color: #000; color: #fff; border: 2px solid #66B2FF;
+    padding: 3px 10px; font-family: 'Jost', sans-serif; font-size: 1.02rem;
+    font-weight: bold; cursor: pointer; transform: skewX(-12deg);
+    box-shadow: 3px 3px 0 #0044aa; transition: all 0.2s; display: none;
+    min-width: 34px; line-height: 1.2;
 }
-
-.nav-btn:hover {
-    background-color: #66B2FF;
-    color: #000;
-}
-
-.nav-btn span {
-    display: inline-block;
-    transform: skewX(12deg);
-}
-
+.nav-btn:hover { background-color: #66B2FF; color: #000; }
+.nav-btn span { display: inline-block; transform: skewX(12deg); }
 #dialogue-text {
-    color: #fff;
-    font-size: 1.35rem;
-    line-height: 1.6;
-    text-shadow: 1px 1px 3px #000;
-    overflow-y: auto;
-    flex-grow: 1;
-    padding-right: 15px;
+    color: #fff; font-size: 1.35rem; line-height: 1.6; text-shadow: 1px 1px 3px #000;
+    overflow-y: auto; flex-grow: 1; padding-right: 15px;
 }
-
 #dialogue-text::-webkit-scrollbar { width: 6px; }
 #dialogue-text::-webkit-scrollbar-thumb { background: #66B2FF; border-radius: 3px; }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 #choice-container {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 20;
-    width: 80%;
-    max-width: 600px;
+    position: absolute; top: 36%; left: 50%; transform: translate(-50%, -50%);
+    display: none; flex-direction: column; gap: 13px; z-index: 20;
+    width: 84%; max-width: 620px; max-height: 60vh; overflow-y: auto; padding: 4px;
 }
-
 .choice-btn {
     background: linear-gradient(135deg, rgba(0, 40, 100, 0.95), rgba(0, 15, 40, 0.95));
-    border: 2px solid #66B2FF;
-    color: #fff;
-    padding: 15px 25px;
-    font-size: 1.2rem;
-    font-family: 'Jost', sans-serif;
-    cursor: pointer;
-    border-radius: 4px;
-    box-shadow: 0 0 15px rgba(102, 178, 255, 0.3);
-    transition: all 0.2s;
-    text-align: center;
+    border: 2px solid #66B2FF; color: #fff; padding: 14px 22px;
+    font-size: 1.12rem; font-family: 'Jost', sans-serif; cursor: pointer;
+    border-radius: 4px; box-shadow: 0 0 15px rgba(102, 178, 255, 0.3);
+    transition: all 0.2s; text-align: center; line-height: 1.35;
 }
-
-.choice-btn:hover {
-    background: #66B2FF;
-    color: #000;
-    transform: scale(1.05);
-}
+.choice-btn:hover { background: #66B2FF; color: #000; transform: scale(1.04); }
 
 #fade-black {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: black;
-    z-index: 10;
-    opacity: 0;
-    pointer-events: none;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: black; z-index: 10; opacity: 0; pointer-events: none;
     transition: opacity 1s ease-in-out;
 }
 
 #letter-screen {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 20;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 20;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 1s ease-in-out;
 }
-
 .letter-paper {
-    background: #fdfbf7;
-    width: 90%;
-    max-width: 500px;
-    padding: 25px 20px;
-    border-radius: 4px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    position: relative;
-    color: #111;
-    font-family: 'Caveat', cursive;
-    display: flex;
-    flex-direction: column;
+    background: #fdfbf7; width: 90%; max-width: 520px; padding: 25px 20px;
+    border-radius: 4px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    position: relative; color: #111; font-family: 'Caveat', cursive;
+    display: flex; flex-direction: column;
 }
-
 .letter-paper::before {
-    content: '';
-    position: absolute;
-    top: 8px; left: 8px; right: 8px; bottom: 8px;
-    border: 2px dashed #d1c7b7;
-    border-radius: 2px;
-    pointer-events: none;
+    content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 2px dashed #d1c7b7; border-radius: 2px; pointer-events: none;
 }
-
-.letter-nav-container {
-    position: absolute;
-    top: -45px;
-    right: 0;
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
-
+.letter-nav-container { position: absolute; top: -45px; right: 0; display: flex; gap: 8px; z-index: 10; }
 .letter-nav-btn {
-    background-color: #2b2b2b;
-    color: #fff;
-    border: 2px solid #fff;
-    padding: 6px 16px;
-    font-family: 'Jost', sans-serif;
-    font-size: 1.3rem;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 6px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.2s;
-    display: none;
+    background-color: #2b2b2b; color: #fff; border: 2px solid #fff;
+    padding: 6px 15px; font-family: 'Jost', sans-serif; font-size: 1.2rem;
+    font-weight: bold; cursor: pointer; border-radius: 6px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5); transition: all 0.2s; display: none;
 }
-
-.letter-nav-btn:hover {
-    background-color: #e63946;
-    color: #fff;
-}
-
-#letter-content {
-    font-size: 1.4rem;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    min-height: 180px;
-    margin-top: 5px;
-}
+.letter-nav-btn:hover { background-color: #e63946; color: #fff; }
+#letter-content { font-size: 1.4rem; line-height: 1.4; white-space: pre-wrap; min-height: 180px; margin-top: 5px; overflow-y: auto; max-height: 60vh; }
 
 #fireworks-screen {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #02060f;
-    z-index: 30;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #02060f; z-index: 30; display: none;
+    justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 1.5s ease-in-out;
 }
-
-#fireworks-canvas {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-}
-
+#fireworks-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 #fireworks-text {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    pointer-events: none;
-    padding: 0 6vw;
+    position: relative; z-index: 2; text-align: center;
+    pointer-events: none; padding: 0 6vw;
+    display: flex; flex-direction: column; align-items: center;
 }
-
+#fw-top {
+    font-family: 'Jost', sans-serif; font-weight: 700; letter-spacing: 0.42em;
+    text-transform: uppercase; color: #ffd6e5;
+    font-size: clamp(0.85rem, 3.2vw, 1.5rem);
+    text-shadow: 0 0 14px rgba(255, 79, 139, 0.9);
+    animation: fwFadeUp 1.3s ease-out 0.4s both;
+}
 #fw-title {
-    font-family: 'Caveat', cursive;
-    font-size: clamp(2.8rem, 12vw, 6.5rem);
-    line-height: 1.1;
-    color: #fff;
-    text-wrap: balance;
-    text-shadow: 0 0 10px #ff7aa8, 0 0 30px #ff4f8b, 0 0 60px #ff2a6d;
-    animation: fwPop 1.8s ease-out both, fwGlow 2.6s ease-in-out 1.8s infinite;
+    font-family: 'Caveat', cursive; font-weight: 700;
+    font-size: clamp(3.4rem, 17vw, 8.5rem); line-height: 0.95;
+    margin: 4px 0 2px;
+    background: linear-gradient(90deg, #ffffff, #ffc2d6, #ffffff, #ff7aa8, #ffffff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 22px rgba(255, 79, 139, 0.9));
+    animation: fwPop 1.5s cubic-bezier(.2,1.4,.4,1) both, fwShimmer 6s linear 1.6s infinite;
 }
-
 #fw-name {
-    font-family: 'Jost', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: #ffd6e5;
-    font-size: clamp(1rem, 4vw, 1.8rem);
-    margin-top: 14px;
-    text-shadow: 0 0 12px rgba(255, 79, 139, 0.8);
-    animation: fwFade 2s ease-out 1.2s both;
+    font-family: 'Jost', sans-serif; font-weight: 700; letter-spacing: 0.55em;
+    text-transform: uppercase; color: #ffffff;
+    font-size: clamp(0.9rem, 3.6vw, 1.6rem); margin-top: 10px;
+    text-shadow: 0 0 16px rgba(102, 178, 255, 0.9);
+    animation: fwFadeUp 1.4s ease-out 1s both;
 }
-
-@keyframes fwPop {
-    0% { opacity: 0; transform: scale(0.4); }
-    60% { opacity: 1; transform: scale(1.12); }
-    100% { opacity: 1; transform: scale(1); }
+#fw-sub {
+    font-family: 'Jost', sans-serif; font-style: italic; color: #a9c9ff;
+    font-size: clamp(0.72rem, 2.6vw, 1rem); letter-spacing: 0.12em;
+    margin-top: 16px; text-shadow: 0 0 12px rgba(102, 178, 255, 0.7);
+    animation: fwFadeUp 1.4s ease-out 1.8s both;
 }
-
-@keyframes fwGlow {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes fwFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+@keyframes fwPop { 0% { opacity: 0; transform: scale(0.35); } 60% { opacity: 1; transform: scale(1.12); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes fwShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+@keyframes fwFadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 
 #fw-continue {
-    position: absolute;
-    bottom: 6vh;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    background: rgba(255, 79, 139, 0.15);
-    border: 2px solid #ff7aa8;
-    color: #fff;
-    padding: 12px 36px;
-    font-family: 'Jost', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    border-radius: 30px;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1s ease-in-out, background 0.2s;
+    position: absolute; bottom: 6vh; left: 50%; transform: translateX(-50%);
+    z-index: 3; background: rgba(255, 79, 139, 0.15); border: 2px solid #ff7aa8;
+    color: #fff; padding: 12px 36px; font-family: 'Jost', sans-serif;
+    font-size: 1.05rem; font-weight: 700; letter-spacing: 2px;
+    border-radius: 30px; cursor: pointer; opacity: 0; pointer-events: none;
+    transition: opacity 1s ease-in-out, background 0.2s, transform 0.2s;
 }
-
-#fw-continue.visible {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-#fw-continue:hover {
-    background: #ff4f8b;
-}
+#fw-continue.visible { opacity: 1; pointer-events: auto; animation: fwFadeUp 1s ease-out both; }
+#fw-continue:hover { background: #ff4f8b; transform: translateX(-50%) scale(1.05); }
 
 #ending-screen {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #111;
-    z-index: 40;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #0a0a0f; z-index: 40; display: none;
+    justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 1.5s ease-in-out;
 }
-
+.ending-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
 #ending-photo {
-    max-height: 75vh;
-    max-width: 85vw;
-    border: 12px solid #fff;
-    border-bottom-width: 40px;
-    border-radius: 2px;
+    max-height: 72vh; max-width: 85vw;
+    border: 12px solid #fff; border-bottom-width: 40px; border-radius: 2px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-    transform: rotate(-2deg);
-    transition: transform 0.4s ease-out;
-    background-color: #fff;
-    object-fit: contain;
+    transform: rotate(-2deg); transition: transform 0.4s ease-out;
+    background-color: #fff; object-fit: contain;
+}
+#ending-caption {
+    color: #fff; font-family: 'Jost', sans-serif; letter-spacing: 1px;
+    font-size: 1rem; opacity: 0.85; text-align: center;
+    animation: fwFadeUp 1.6s ease-out 1.2s both;
 }
 
 @media (max-width: 600px) {
-    #dialogue-box {
-        padding: 1.4rem 1.2rem;
-    }
-    #dialogue-text {
-        font-size: 1.1rem;
-    }
-    #speaker-name {
-        font-size: 1.1rem;
-        padding: 5px 18px;
-    }
-    #loading-text {
-        font-size: 1.4rem;
-    }
+    #dialogue-box { padding: 1.4rem 1.1rem; }
+    #dialogue-text { font-size: 1.08rem; }
+    #speaker-name { font-size: 1.02rem; padding: 4px 15px; letter-spacing: 1px; max-width: calc(100% - 108px); }
+    .nav-btn { font-size: 0.9rem; padding: 3px 8px; min-width: 30px; }
+    #loading-text { font-size: 1.4rem; }
+    .choice-btn { font-size: 1rem; padding: 12px 16px; }
 }
 </style>
 </head>
 <body>
 
+<audio id="bgm-back" src="back.mp3" loop></audio>
 <audio id="bgm" src="lagu.mp3" loop></audio>
 <audio id="sfx-click" src="https://www.myinstants.com/media/sounds/click.mp3"></audio>
+<audio id="sfx-kembangapi" src="kembangapi.mp3"></audio>
 
 <div id="loading-screen">
     <div id="loading-text">Mempersiapkan Kejutan... <span id="loading-percent">0%</span></div>
@@ -457,6 +229,8 @@ body, html {
 </div>
 
 <div id="game-container">
+    <div id="bg-a" class="bg-layer"></div>
+    <div id="bg-b" class="bg-layer"></div>
     <div id="overlay"></div>
     <div id="choice-container"></div>
 
@@ -488,63 +262,69 @@ body, html {
 <div id="fireworks-screen">
     <canvas id="fireworks-canvas"></canvas>
     <div id="fireworks-text">
-        <div id="fw-title">Selamat 16 Years Old</div>
-        <div id="fw-name">Sandrina</div>
+        <div id="fw-top">Selamat Ulang Tahun</div>
+        <div id="fw-title">Sandrina</div>
+        <div id="fw-name">Sweet Sixteen</div>
+        <div id="fw-sub">Semoga bahagia selalu, ya. Kamu berharga.</div>
     </div>
-    <button id="fw-continue" onclick="showEnding()">Lanjut</button>
+    <button id="fw-continue" onclick="startEpilogue()">Lanjut</button>
 </div>
 
 <div id="ending-screen">
-    <img id="ending-photo" src="foto-akhir.png" alt="Foto Kenangan">
+    <div class="ending-wrap">
+        <img id="ending-photo" src="foto-akhir.png" alt="Foto Kenangan">
+        <div id="ending-caption">Terima kasih sudah bermain, Sandrina. 💙</div>
+    </div>
 </div>
 
 <script>
-const assetsToLoad = [
-    'background.png',
-    'junpei.png',
-    'akihiko.png',
-    'shinjiro.png',
-    'makoto.png',
-    'koromaru.png',
-    'yukari.png',
-    'foto-akhir.png'
+const imageAssets = [
+    'udinus.jpg', 'background.png', 'junpei.png', 'akihiko.png',
+    'shinjiro.png', 'makoto.png', 'koromaru.png', 'yukari.png', 'foto-akhir.png'
 ];
+const audioAssets = ['back.mp3', 'lagu.mp3', 'kembangapi.mp3'];
 
 let loadedAssets = 0;
+const totalAssets = imageAssets.length + audioAssets.length;
 let loadingFinished = false;
 
-function preloadAssets() {
-    if (assetsToLoad.length === 0) {
-        finishLoading();
-        return;
-    }
-
-    assetsToLoad.forEach(src => {
-        const img = new Image();
-        img.onload = updateLoadingProgress;
-        img.onerror = () => {
-            console.warn("Gagal memuat gambar: " + src + ". Pastikan nama file persis sama!");
-            updateLoadingProgress();
-        };
-        img.src = src;
-    });
+function bumpProgress() {
+    loadedAssets++;
+    const percent = Math.min(100, Math.floor((loadedAssets / totalAssets) * 100));
+    document.getElementById('loading-percent').textContent = percent + '%';
+    document.getElementById('loading-bar').style.width = percent + '%';
+    if (loadedAssets >= totalAssets) setTimeout(finishLoading, 400);
 }
 
-function updateLoadingProgress() {
-    loadedAssets++;
-    const percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
-    document.getElementById('loading-percent').textContent = percent + "%";
-    document.getElementById('loading-bar').style.width = percent + "%";
+function preloadAssets() {
+    imageAssets.forEach(src => {
+        const img = new Image();
+        let done = false;
+        const ok = () => { if (done) return; done = true; bumpProgress(); };
+        img.onload = ok;
+        img.onerror = () => { console.warn('Gagal memuat gambar: ' + src); ok(); };
+        img.src = src;
+    });
 
-    if (loadedAssets === assetsToLoad.length) {
-        setTimeout(finishLoading, 400);
-    }
+    audioAssets.forEach(src => {
+        const a = new Audio();
+        let done = false;
+        const ok = () => { if (done) return; done = true; bumpProgress(); };
+        a.addEventListener('canplaythrough', ok, { once: true });
+        a.addEventListener('loadeddata', ok, { once: true });
+        a.addEventListener('error', () => { console.warn('Gagal memuat audio: ' + src); ok(); }, { once: true });
+        a.preload = 'auto';
+        a.src = src;
+        try { a.load(); } catch (e) {}
+        setTimeout(ok, 6000);
+    });
+
+    setTimeout(finishLoading, 14000);
 }
 
 function finishLoading() {
     if (loadingFinished) return;
     loadingFinished = true;
-
     const loader = document.getElementById('loading-screen');
     loader.style.opacity = '0';
     setTimeout(() => {
@@ -556,10 +336,56 @@ function finishLoading() {
 
 window.addEventListener('load', preloadAssets);
 
-const bgm = document.getElementById('bgm');
+const backBgm = document.getElementById('bgm-back');
+const personaBgm = document.getElementById('bgm');
 const clickSfx = document.getElementById('sfx-click');
+const kembangapiSfx = document.getElementById('sfx-kembangapi');
 
 let audioStarted = false;
+let personaMusicStarted = false;
+
+function startAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+    backBgm.volume = 0.5;
+    backBgm.play().catch(() => {});
+}
+
+function playClick() {
+    try { clickSfx.currentTime = 0; clickSfx.play().catch(() => {}); } catch (e) {}
+}
+
+function playKembangapi() {
+    try { kembangapiSfx.currentTime = 0; kembangapiSfx.volume = 0.7; kembangapiSfx.loop = true; kembangapiSfx.play().catch(() => {}); } catch (e) {}
+}
+
+function stopKembangapi() {
+    try { kembangapiSfx.pause(); kembangapiSfx.currentTime = 0; } catch (e) {}
+}
+
+function switchToPersonaMusic() {
+    if (personaMusicStarted) return;
+    personaMusicStarted = true;
+
+    let v = backBgm.volume;
+    const fadeOut = setInterval(() => {
+        v -= 0.05;
+        if (v <= 0) { backBgm.volume = 0; backBgm.pause(); clearInterval(fadeOut); }
+        else { backBgm.volume = v; }
+    }, 60);
+
+    personaBgm.volume = 0;
+    personaBgm.play().catch(() => {});
+    let lv = 0;
+    const fadeIn = setInterval(() => {
+        lv += 0.04;
+        if (lv >= 0.6) { personaBgm.volume = 0.6; clearInterval(fadeIn); }
+        else { personaBgm.volume = lv; }
+    }, 60);
+}
+
+document.addEventListener('pointerdown', startAudio, { once: true });
+
 let currentLine = 0;
 let isTyping = false;
 let typeInterval = null;
@@ -573,6 +399,7 @@ let isLetterTyping = false;
 let letterInterval = null;
 
 let gameState = 'DIALOGUE';
+let inEpilogue = false;
 
 const dialogBackBtn = document.getElementById('dialog-back');
 const dialogNextBtn = document.getElementById('dialog-next');
@@ -591,253 +418,307 @@ const fireworksScreenEl = document.getElementById('fireworks-screen');
 const endingScreenEl = document.getElementById('ending-screen');
 const fwContinueBtn = document.getElementById('fw-continue');
 
-function startAudio() {
-    if (audioStarted) return;
-    audioStarted = true;
-    bgm.volume = 0.6;
-    bgm.play().catch(() => {});
-}
+const bgA = document.getElementById('bg-a');
+const bgB = document.getElementById('bg-b');
+bgA.style.backgroundImage = "url('udinus.jpg')";
+bgA.style.opacity = '1';
+let activeBg = bgA;
+let inactiveBg = bgB;
+let currentBgSrc = 'udinus.jpg';
 
-function playClick() {
-    clickSfx.currentTime = 0;
-    clickSfx.play().catch(() => {});
-}
-
-function updateNavButtons() {
-    if (gameState === 'DIALOGUE') {
-        const data = story[currentLine];
-
-        dialogBackBtn.style.display = (currentLine > 0 && !isChoiceActive && !isTransitioning) ? 'block' : 'none';
-
-        const canNext = data && !isTyping && !isChoiceActive && !isTransitioning &&
-            (data.type !== 'choice' || data.isResolved);
-        dialogNextBtn.style.display = canNext ? 'block' : 'none';
-    } else if (gameState === 'LETTER') {
-        letterBackBtn.style.display = isTransitioning ? 'none' : 'block';
-        letterNextBtn.style.display = (!isLetterTyping && !isTransitioning) ? 'block' : 'none';
-    } else {
-        dialogBackBtn.style.display = 'none';
-        dialogNextBtn.style.display = 'none';
-        letterBackBtn.style.display = 'none';
-        letterNextBtn.style.display = 'none';
-    }
+function setBackground(src) {
+    if (!src) src = 'background.png';
+    if (src === currentBgSrc) return;
+    currentBgSrc = src;
+    inactiveBg.style.backgroundImage = "url('" + src + "')";
+    inactiveBg.style.opacity = '1';
+    activeBg.style.opacity = '0';
+    const tmp = activeBg;
+    activeBg = inactiveBg;
+    inactiveBg = tmp;
 }
 
 const story = [
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Sore itu, bel sekolah berbunyi di SMKN 10 Semarang dan SMA 14 Semarang hampir bersamaan. Arshavin dan Sandrina sudah janji untuk pulang bareng—bukan langsung ke rumah, tapi ke tempat yang sudah mereka sepakati sejak pagi: kampus UDINUS.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Langit di atas Semarang berwarna keemasan. Angin berhembus lembut, membawa aroma rumput dan aspal yang baru saja diguyur hujan sore. Arshavin tiba lebih dulu, duduk di bangku dekat gerbang UDINUS dengan tas masih di pundak.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Tak lama kemudian, Sandrina datang. Seragamnya masih rapi, tapi wajahnya jelas menyimpan rasa penasaran bercampur lelah setelah seharian belajar.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'San! Sini! Aku udah nungguin dari tadi.' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: 'Iya, iya. Maaf, tadi gurunya keluar kelas telat. Kamu udah lama?' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Nggak lama, kok. Paling... setengah jam. Hehe.' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: 'Setengah jam?! Kamu bilang "sebentar" di chat tadi!' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Ya... daripada kamu nungguin, mending aku yang nungguin duluan, kan? Lagian aku nggak keberatan, kok. Pemandangan UDINUS sore ini lumayan buat ngabisin waktu.' },
     {
-        name: "Narator",
-        image: "",
-        text: "Hari ini adalah hari yang sangat spesial. Di dunia yang mempertemukan realita dan keajaiban Persona, Sandrina tengah merayakan ulang tahunnya yang ke-16."
+        type: 'choice', bg: 'udinus.jpg', name: 'Arshavin', image: '',
+        question: 'Ngomong-ngomong... kamu masih sempet nggak? Aku mau ngajak kamu ke suatu tempat.',
+        choices: [
+            { text: 'Sempet, kok. Memangnya mau ke mana?', reply: 'Ada satu tempat di sekitar UDINUS ini yang... nggak semua orang bisa lihat. Aku nemu kemarin sore, dan langsung kepikiran kamu.' },
+            { text: 'Tergantung. Kalau jauh, aku nolak.', reply: 'Nggak jauh, kok! Beneran. Masih di area kampus. Tapi... tempatnya agak aneh. Kamu harus lihat sendiri buat percaya.' },
+            { text: 'Kamu aneh deh, ngajak aku ke UDINUS cuma buat jalan-jalan.', reply: 'Hahaha, jujur aja aku juga bingung mau ngomong apa. Tapi percaya deh, ini bukan jalan-jalan biasa. Ini bakal jadi sore yang nggak akan kamu lupain.' }
+        ]
     },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Aku nemu sesuatu kemarin. Di koridor belakang gedung, deket tangga darurat. Ada... cahaya aneh. Kayak pintu, tapi bukan pintu.' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: 'Maksudmu... pintu ke dunia lain? Kamu lagi baca novel fantasi ya? Atau habis main game seharian?' },
     {
-        name: "Narator",
-        image: "",
-        text: "Suasana pesta terasa begitu hangat dan meriah, dihadiri oleh teman-teman dari SEES dan tentu saja, Arshavin, yang sudah mempersiapkan banyak hal untuk hari ini."
+        type: 'choice', bg: 'udinus.jpg', name: 'Arshavin', image: '',
+        question: 'Kamu percaya nggak sama cerita yang kayak gitu?',
+        choices: [
+            { text: 'Nggak percaya. Tapi ya udah, aku percaya sama kamu.', reply: 'Itu udah cukup buat aku. Kadang, percaya sama orang yang kita sayang itu lebih penting daripada percaya sama cerita aneh. Ayo, kita ke sana bareng.' },
+            { text: 'Kalau kamu bilang begitu, aku mau lihat sendiri.', reply: 'Bagus! Rasa penasaran itu pintu pertama. Jangan berkedip, ya. Kita udah dekat.' },
+            { text: 'Ini pasti cuma alasan biar aku jalan bareng kamu, ya?', reply: 'E-eh... nggak, kok! Maksudku... ya, setengah-setengah benarnya, sih. Hehe. Tapi beneran, ada sesuatu di sana. Aku nggak akan bikin kamu buang waktu.' }
+        ]
     },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Mereka berjalan menyusuri koridor UDINUS yang mulai sepi. Mahasiswa sudah pulang, kelas-kelas sudah kosong, hanya lampu lorong yang masih menyala. Langkah mereka bergema pelan di lantai keramik yang mengkilap.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Nah. Itu dia.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Di ujung koridor, di dinding samping tangga darurat, cahaya biru keperakan berdenyut pelan. Bentuknya bulat, seperti permukaan air yang bergetar, dengan pola berputar yang membuat mata sedikit pusing bila terlalu lama dipandang.' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: 'Ini... beneran ada? Di kampus UDINUS? Kok bisa?!' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Aku juga nggak ngerti, San. Kemarin aku lewat sini kebetulan, dan... ya. Ini ada. Mungkin memang selalu ada, cuma belum ada yang sadar.' },
     {
-        name: "Junpei Iori",
-        image: "junpei.png",
-        text: "Yo, Sandrina! Selamat ulang tahun ke-16 hari ini! Semoga sehat selalu ya! Lo beneran keren abis udah bertahan sejauh ini."
+        type: 'choice', bg: 'udinus.jpg', name: 'Arshavin', image: '',
+        question: 'Kamu berani masuk?',
+        choices: [
+            { text: 'Berani. Aku penasaran banget.', reply: 'Aku suka semangatmu. Pegang tanganku, jangan dilepas, ya. Kita masuk bareng.' },
+            { text: 'Takut... tapi kalau sama kamu, aku mau coba.', reply: 'Tenang. Aku di sini, aku nggak akan ngelepas tanganmu. Apa pun yang ada di balik pintu itu, kita hadapi bareng.' },
+            { text: 'Kalau ini bercanda, aku bakal marah banget, tau.', reply: 'Kalau ini bercanda, aku juga bakal marah sama diriku sendiri. Tapi lihat deh... ini beneran. Ayo.' }
+        ]
     },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Pegang tanganku. Apapun yang kamu lihat di sana... nggak usah panik. Aku di sampingmu.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Arshavin menggenggam tangan Sandrina erat. Mereka menarik napas panjang, lalu melangkah bersama. Cahaya biru menelan mereka, dan koridor UDINUS memudar perlahan.' },
+
+    { bg: 'background.png', name: 'Narator', image: '', music: 'persona', text: 'Cahaya meredup. Ketika Sandrina membuka mata, ia berdiri di sebuah aula besar yang dipenuhi lampu gantung keemasan. Lantainya memantulkan cahaya, dan udara terasa hangat seperti malam pesta.' },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Sandrina tersentak. Ia menoleh ke kanan-kiri. Ini bukan UDINUS. Ini... entah di mana. Dan di depannya, berdiri sekelompok orang yang sama sekali tidak ia kenal—tapi mereka semua menatapnya dengan senyum.' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'AKHIRNYA DATANG JUGA! Sandrina! Kamu beneran Sandrina, kan?! Yang dari SMA 14 Semarang itu!' },
+    { bg: 'background.png', name: 'Sandrina', image: '', text: 'K-kok kamu tahu namaku?! Kamu siapa?! Aku di mana ini?!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Tenang, tenang! Jangan panik dulu! Kita udah nungguin kamu dari tadi. Arshavin udah cerita banyak soal kamu, kok.' },
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Jadi ini orangnya. Yang katanya kuat dan keras kepala itu. Hm. Kelihatannya cocok.' },
+    { bg: 'background.png', name: 'Makoto Yuki', image: 'makoto.png', text: '...' },
+    { bg: 'background.png', name: 'Narator', image: 'makoto.png', text: 'Pemuda berambut biru itu hanya mengangguk pelan, tapi senyum tipisnya terlihat jelas.' },
+    { bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png', text: '...Tch. Lama banget. Kirain kamu nyasar di portal.' },
+    { bg: 'background.png', name: 'Koromaru', image: 'koromaru.png', text: 'Arf! Woof!' },
+    { bg: 'background.png', name: 'Narator', image: 'koromaru.png', text: 'Seekor anjing putih kecil menggonggong riang dan memutari kaki Sandrina, ekornya bergoyang kencang.' },
+    { bg: 'background.png', name: 'Sandrina', image: '', text: 'Aku... aku beneran masuk ke dalam game?! Ini... ini karakter-karakter Persona 3?! Aku nggak mimpi, kan?!' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Mimpi?! Nggak, dong! Ini beneran! Kamu beneran ada di sini, di dunia kita! Seru, kan?!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Kita udah denger banyak hal tentang kamu, Sandrina. Tentang gimana kamu selalu bantu teman-temanmu, gimana kamu sering nahan capek sendirian...' },
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Arshavin udah cerita. Katanya hari ini ulang tahunmu yang ke-16. Jadi... selamat ulang tahun.' },
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'Nah. Jadi mereka udah tahu semua soal kamu, San. Aku cerita banyak. Kebanyakan bagusnya, kok. Tenang.' },
     {
-        name: "Junpei Iori",
-        image: "junpei.png",
-        text: "Denger-denger lo habis gendong teman-teman sekelompok lo yang beban itu ya? Gila, the real MVP! Tapi ingat, jangan sampai lo kelelahan sendiri."
+        type: 'choice', bg: 'background.png', name: 'Arshavin', image: '',
+        question: 'Gimana perasaanmu sekarang? Jujur aja.',
+        choices: [
+            { text: 'Aku masih nggak percaya ini semua nyata.', reply: 'Wajar. Aku juga nggak percaya waktu pertama kali masuk ke sini. Nanti juga terbiasa. Mungkin. Sedikit.' },
+            { text: 'Aku takut... tapi penasaran banget.', reply: 'Itu kombinasi yang bagus, kok. Takut bikin kamu hati-hati, penasaran bikin kamu maju. Aku bakal temenin kamu terus.' },
+            { text: 'Aku senang. Aneh ya, padahal baru pertama kali.', reply: 'Nggak aneh. Kadang tempat yang baru itu justru kerasa kayak rumah. Mungkin karena orang-orangnya. Atau karena kamu di sini.' }
+        ]
     },
+
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Oke oke oke! Cukup basa-basinya! Kita kan udah nyiapin sesuatu buat kamu!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Duh! Bentar bentar! Kuenya belum aku siapkan!' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Hah?! Yukari, kamu tadi bilang udah siap!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Aku bilang udah DIBELI! Belum disiapin! Beda, Junpei! Beda!' },
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Tenang. Nggak perlu panik. Aku bantu susun.' },
+    { bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png', text: '...Lilinnya di mana?' },
+    { bg: 'background.png', name: 'Makoto Yuki', image: 'makoto.png', text: 'Di tas Koromaru.' },
+    { bg: 'background.png', name: 'Koromaru', image: 'koromaru.png', text: 'Arf?! (kenapa aku...)' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Bentar, bentar! Susun dulu! Rapi dikit kek! Yang rapi, bukan yang asal jadi!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Jangan berdiri di situ, kamu nutupin kuenya! Minggir sedikit, ih!' },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Kekacauan kecil yang hangat itu berlangsung beberapa menit. Sandrina hanya bisa berdiri sambil menahan tawa, melihat orang-orang yang baru dikenalnya sibuk seperti keluarga.' },
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'San, tutup mata sebentar. Jangan buka sampai aku bilang, ya.' },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Sandrina menutup matanya. Samar-samar ia mendengar suara lilin dinyalakan, langkah-langkah kecil, dan bisikan-bisikan yang berusaha disembunyikan.' },
+    { bg: 'background.png', name: 'Semua', image: '', text: '1... 2... 3... YEAYYY! Selamat ulang tahun, Sandrina!' },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Sandrina membuka mata. Di depannya, sebuah kue dengan lilin angka "16" menyala, dikelilingi wajah-wajah yang tersenyum lebar. Koromaru menggonggong gembira di sampingnya.' },
     {
-        type: "choice",
-        name: "Junpei Iori",
-        image: "junpei.png",
-        question: "Gimana, lo janji bakal terus berpikir positif dan tetap semangat kan?",
+        type: 'choice', bg: 'background.png', name: 'Arshavin', image: '',
+        question: 'Ayo, buat permohonan dulu. Sebelum tiup lilinnya.',
+        choices: [
+            { text: 'Semoga semua orang di sini selalu sehat dan bahagia.', reply: 'Permohonan yang bagus. Tapi... kamu sendiri gimana? Jangan lupa diri sendiri, ya.' },
+            { text: 'Semoga aku bisa jadi lebih kuat... dan lebih baik lagi.', reply: 'Kamu udah kuat. Mungkin sekarang waktunya belajar lebih lembut sama diri sendiri. Tapi ya, aku dukung.' },
+            { text: 'Semoga tahun ini penuh kejutan-kejutan baik.', reply: 'Nah, itu baru! Kalau kejutannya datang, aku mau jadi orang pertama yang lihat kamu senyum.' }
+        ]
+    },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Sandrina meniup lilinnya. Api kecil itu bergoyang, lalu padam, meninggalkan asap tipis yang berbau manis. Semua orang bertepuk tangan.' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Horeee! Sekarang kita makan! Akhirnya! Aku udah lapar dari tadi!' },
+
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Hari itu adalah hari yang sangat spesial. Di dunia yang mempertemukan realita dan keajaiban Persona, Sandrina tengah merayakan ulang tahunnya yang ke-16.' },
+    { bg: 'background.png', name: 'Narator', image: '', text: 'Suasana pesta terasa begitu hangat dan meriah, dihadiri oleh teman-teman dari SEES dan tentu saja, Arshavin, yang sudah mempersiapkan banyak hal untuk hari ini.' },
+
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Yo, Sandrina! Selamat ulang tahun ke-16 hari ini! Semoga sehat selalu ya! Lo beneran keren abis udah bertahan sejauh ini.' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Denger-denger lo habis gendong teman-teman sekelompok lo yang beban itu ya? Gila, the real MVP! Tapi ingat, jangan sampai lo kelelahan sendiri.' },
+    { bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png', text: 'Eh, tapi serius deh. Kalau ada yang bikin lo kesel, cerita aja ke gue. Gue emang keliatan nggak serius, tapi gue bisa jadi pendengar yang... lumayan, kok. Hehe.' },
+    {
+        type: 'choice', bg: 'background.png', name: 'Junpei Iori', image: 'junpei.png',
+        question: 'Gimana, lo janji bakal terus berpikir positif dan tetap semangat kan?',
         rejectionCount: 0,
         followUp: [
-            "Nah, gitu dong! Itu baru Sandrina yang gue kenal! Tapi serius ya, lo nggak harus selalu kuat kok. Kadang cerita ke temen itu bukan tanda lemah.",
-            "Dulu gue juga sering ngerasa nggak berguna. Tapi ternyata ada aja orang yang diam-diam percaya sama kita. Dan buat kita semua, orang itu ya lo.",
-            "Udah ah, nanti gue keliatan terlalu sentimental di depan Akihiko-senpai. Pokoknya nikmatin pestanya, oke? Ada ramen tuh, buruan ambil sebelum abis!"
+            'Nah, gitu dong! Itu baru Sandrina yang gue kenal! Tapi serius ya, lo nggak harus selalu kuat kok. Kadang cerita ke temen itu bukan tanda lemah.',
+            'Dulu gue juga sering ngerasa nggak berguna. Tapi ternyata ada aja orang yang diam-diam percaya sama kita. Dan buat kita semua, orang itu ya lo.',
+            'Udah ah, nanti gue keliatan terlalu sentimental di depan Akihiko-senpai. Pokoknya nikmatin pestanya, oke? Ada ramen tuh, buruan ambil sebelum abis!'
         ],
         choices: [
-            { text: "Iya, aku janji bakal selalu positif!", next: true },
+            { text: 'Iya, aku janji bakal selalu positif!', next: true },
             {
-                text: "Nggak tau deh, rasanya capek...",
+                text: 'Nggak tau deh, rasanya capek...',
                 rejectTexts: [
-                    "Heeei! Nggak ada kata nolak! Lo protagonis kita, jadi lo wajib janji buat terus semangat! Ayo bilang janji!",
-                    "Ayolah Sandrina! Kalo lo pesimis terus, party kita bisa ikutan down! Plis janji dong, ya? Ya??",
-                    "Haaah... ya udahlah kalo lo emang lagi bener-bener capek. Gua paham kok. Kalo emang gak bisa dipaksa semangat sekarang, seenggaknya janji lo bakal istirahat yang bener. Besok kita mulai lagi dari awal."
+                    'Heeei! Nggak ada kata nolak! Lo protagonis kita, jadi lo wajib janji buat terus semangat! Ayo bilang janji!',
+                    'Ayolah Sandrina! Kalo lo pesimis terus, party kita bisa ikutan down! Plis janji dong, ya? Ya??',
+                    'Haaah... ya udahlah kalo lo emang lagi bener-bener capek. Gua paham kok. Kalo emang gak bisa dipaksa semangat sekarang, seenggaknya janji lo bakal istirahat yang bener. Besok kita mulai lagi dari awal.'
                 ]
             }
         ]
     },
+
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Kerja bagus, Sandrina. Mengatasi orang-orang beban dan tidak bertanggung jawab itu memang butuh stamina mental yang sangat kuat.' },
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Oh ya, thanks udah puji gw ganteng. Gw emang ganteng, cuman keknya si Arshavin cemburu berat wkwkw.' },
+    { bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png', text: 'Bercanda. Tapi beneran, kalau kamu butuh tempat buat latihan atau sekadar lari pagi, aku selalu siap. Tubuh yang kuat dimulai dari pikiran yang tenang.' },
     {
-        name: "Akihiko Sanada",
-        image: "akihiko.png",
-        text: "Kerja bagus, Sandrina. Mengatasi orang-orang beban dan tidak bertanggung jawab itu memang butuh stamina mental yang sangat kuat."
-    },
-    {
-        name: "Akihiko Sanada",
-        image: "akihiko.png",
-        text: "Oh ya, thanks udah puji gw ganteng. Gw emang ganteng, cuman keknya si Arshavin cemburu berat wkwkw."
-    },
-    {
-        type: "choice",
-        name: "Akihiko Sanada",
-        image: "akihiko.png",
-        question: "Pertarunganmu yang sebenarnya baru dimulai. Janji padaku kau nggak akan pernah menyerah pada keadaan?",
+        type: 'choice', bg: 'background.png', name: 'Akihiko Sanada', image: 'akihiko.png',
+        question: 'Pertarunganmu yang sebenarnya baru dimulai. Janji padaku kau nggak akan pernah menyerah pada keadaan?',
         rejectionCount: 0,
         followUp: [
-            "Bagus. Janji seorang petarung itu tidak boleh dilanggar.",
-            "Dulu aku terlalu fokus jadi kuat sampai lupa bahwa kuat itu bukan cuma soal otot. Kuat juga berarti berani minta tolong dan berani istirahat.",
-            "Kalau suatu hari kamu butuh partner latihan, atau cuma butuh teman lari pagi, bilang saja. Aku siap kapan pun."
+            'Bagus. Janji seorang petarung itu tidak boleh dilanggar.',
+            'Dulu aku terlalu fokus jadi kuat sampai lupa bahwa kuat itu bukan cuma soal otot. Kuat juga berarti berani minta tolong dan berani istirahat.',
+            'Kalau suatu hari kamu butuh partner latihan, atau cuma butuh teman lari pagi, bilang saja. Aku siap kapan pun.'
         ],
         choices: [
-            { text: "Tentu, aku janji nggak akan nyerah.", next: true },
+            { text: 'Tentu, aku janji nggak akan nyerah.', next: true },
             {
-                text: "Tapi aku pengen nyerah aja...",
+                text: 'Tapi aku pengen nyerah aja...',
                 rejectTexts: [
-                    "Hei! Aku tidak melatihmu untuk jadi pengecut! Kau harus berjanji padaku untuk terus berjuang!",
-                    "Alasan lelah tidak kuterima! Kau punya potensi luar biasa. Tegakkan kepalamu dan berjanji sekarang!",
-                    "...Ternyata kau memang sudah mencapai batasmu hari ini. Maaf kalau aku terlalu menekan. Petarung terhebat pun butuh waktu mundur untuk memulihkan lukanya. Pulihkan dirimu, Sandrina."
+                    'Hei! Aku tidak melatihmu untuk jadi pengecut! Kau harus berjanji padaku untuk terus berjuang!',
+                    'Alasan lelah tidak kuterima! Kau punya potensi luar biasa. Tegakkan kepalamu dan berjanji sekarang!',
+                    '...Ternyata kau memang sudah mencapai batasmu hari ini. Maaf kalau aku terlalu menekan. Petarung terhebat pun butuh waktu mundur untuk memulihkan lukanya. Pulihkan dirimu, Sandrina.'
                 ]
             }
         ]
     },
+
+    { bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png', text: '...Tch. Selamat ulang tahun. Berhentilah memaksakan diri buat orang lain sampai kau sendiri yang menderita, bodoh!' },
+    { bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png', text: 'Aku benci melihatmu hancur cuma karena ngerjain tugas teman-temanmu yang nggak tahu diri itu. Jangan mau jadi pahlawan kesiangan.' },
+    { bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png', text: '...Dan jangan dikira aku peduli. Aku cuma nggak suka lihat orang buang-buang tenaga buat hal yang nggak sepadan. Itu aja.' },
     {
-        name: "Shinjiro Aragaki",
-        image: "shinjiro.png",
-        text: "...Tch. Selamat ulang tahun. Berhentilah memaksakan diri buat orang lain sampai kau sendiri yang menderita, bodoh!"
-    },
-    {
-        name: "Shinjiro Aragaki",
-        image: "shinjiro.png",
-        text: "Aku benci melihatmu hancur cuma karena ngerjain tugas teman-temanmu yang nggak tahu diri itu. Jangan mau jadi pahlawan kesiangan."
-    },
-    {
-        type: "choice",
-        name: "Shinjiro Aragaki",
-        image: "shinjiro.png",
-        question: "Dan berhenti mencabuti kukumu saat stres! Janji kau nggak akan menyakiti dirimu sendiri dengan cabut kuku lagi?",
+        type: 'choice', bg: 'background.png', name: 'Shinjiro Aragaki', image: 'shinjiro.png',
+        question: 'Dan berhenti mencabuti kukumu saat stres! Janji kau nggak akan menyakiti dirimu sendiri dengan cabut kuku lagi?',
         rejectionCount: 0,
         followUp: [
-            "...Hmph. Gitu aja susah banget diucapin. Tapi, bagus.",
-            "Dengar. Aku dulu juga sok kuat dan nggak mau dengerin siapa pun. Hasilnya, banyak hal yang kusesali. Jangan ikuti jalanku.",
-            "Kalau lagi stres, keluar jalan sebentar atau makan sesuatu yang enak. Intinya cari cara lain yang nggak menyakiti dirimu. Itu saja."
+            '...Hmph. Gitu aja susah banget diucapin. Tapi, bagus.',
+            'Dengar. Aku dulu juga sok kuat dan nggak mau dengerin siapa pun. Hasilnya, banyak hal yang kusesali. Jangan ikuti jalanku.',
+            'Kalau lagi stres, keluar jalan sebentar atau makan sesuatu yang enak. Intinya cari cara lain yang nggak menyakiti dirimu. Itu saja.'
         ],
         choices: [
-            { text: "Iya, aku janji nggak bakal cabut kuku lagi.", next: true },
+            { text: 'Iya, aku janji nggak bakal cabut kuku lagi.', next: true },
             {
-                text: "Tapi kan refleks kalau lagi panik...",
+                text: 'Tapi kan refleks kalau lagi panik...',
                 rejectTexts: [
-                    "Jangan keras kepala! Jarimu bisa infeksi dan luka, bodoh! Cepat janji padaku sekarang!",
-                    "Dengar, aku nggak akan membiarkanmu merusak dirimu sendiri. Hentikan kebiasaan jelek itu. Janji!",
-                    "Terserah kau saja... Tapi kalau kulihat kukumu berdarah lagi, aku sendiri yang akan membalut jarimu sampai kau nggak bisa menggerakkannya. Tolong, sayangi dirimu sendiri."
+                    'Jangan keras kepala! Jarimu bisa infeksi dan luka, bodoh! Cepat janji padaku sekarang!',
+                    'Dengar, aku nggak akan membiarkanmu merusak dirimu sendiri. Hentikan kebiasaan jelek itu. Janji!',
+                    'Terserah kau saja... Tapi kalau kulihat kukumu berdarah lagi, aku sendiri yang akan membalut jarimu sampai kau nggak bisa menggerakkannya. Tolong, sayangi dirimu sendiri.'
                 ]
             }
         ]
     },
+
+    { bg: 'background.png', name: 'Makoto Yuki', image: 'makoto.png', text: 'Selamat ulang tahun, Sandrina. Kau sudah bekerja sangat keras untuk menanggung semuanya sendirian.' },
+    { bg: 'background.png', name: 'Makoto Yuki', image: 'makoto.png', text: 'Aku tahu bagaimana rasanya menjadi orang yang selalu diandalkan. Tapi bahkan bulan pun butuh malam untuk beristirahat.' },
     {
-        name: "Makoto Yuki",
-        image: "makoto.png",
-        text: "Selamat ulang tahun, Sandrina. Kau sudah bekerja sangat keras untuk menanggung semuanya sendirian."
-    },
-    {
-        type: "choice",
-        name: "Makoto Yuki",
-        image: "makoto.png",
-        question: "Berjanjilah padaku untuk lebih menjaga diri sendiri dan beristirahat jika kau merasa lelah.",
+        type: 'choice', bg: 'background.png', name: 'Makoto Yuki', image: 'makoto.png',
+        question: 'Berjanjilah padaku untuk lebih menjaga diri sendiri dan beristirahat jika kau merasa lelah.',
         rejectionCount: 0,
         followUp: [
-            "Terima kasih, Sandrina. Janji itu berarti banyak buatku.",
-            "Aku belajar bahwa ikatan dengan orang lain adalah sumber kekuatan terbesar. Kau tidak perlu membawa semuanya sendirian, karena kami semua ada di sini.",
-            "Kalau suatu hari kau merasa lelah, ingat saja bahwa istirahat bukan kegagalan. Itu bagian dari perjalanan."
+            'Terima kasih, Sandrina. Janji itu berarti banyak buatku.',
+            'Aku belajar bahwa ikatan dengan orang lain adalah sumber kekuatan terbesar. Kau tidak perlu membawa semuanya sendirian, karena kami semua ada di sini.',
+            'Kalau suatu hari kau merasa lelah, ingat saja bahwa istirahat bukan kegagalan. Itu bagian dari perjalanan.'
         ],
         choices: [
-            { text: "Baik, aku janji bakal jaga diri.", next: true },
+            { text: 'Baik, aku janji bakal jaga diri.', next: true },
             {
-                text: "Tugasnya masih banyak...",
+                text: 'Tugasnya masih banyak...',
                 rejectTexts: [
-                    "Aku tidak akan membiarkan percakapan ini berlanjut sebelum kau berjanji. Kau harus peduli pada dirimu sendiri.",
-                    "Mengerjakan segalanya sendirian itu tidak akan membawamu ke mana-mana selain kehancuran. Aku tahu rasanya. Janji padaku.",
-                    "...Baiklah, aku mengerti jika sekarang rasanya terlalu berat untuk berjanji. Tapi ketahuilah, pintu asrama selalu terbuka jika kau butuh tempat untuk bersandar."
+                    'Aku tidak akan membiarkan percakapan ini berlanjut sebelum kau berjanji. Kau harus peduli pada dirimu sendiri.',
+                    'Mengerjakan segalanya sendirian itu tidak akan membawamu ke mana-mana selain kehancuran. Aku tahu rasanya. Janji padaku.',
+                    '...Baiklah, aku mengerti jika sekarang rasanya terlalu berat untuk berjanji. Tapi ketahuilah, pintu asrama selalu terbuka jika kau butuh tempat untuk bersandar.'
                 ]
             }
         ]
     },
+
+    { bg: 'background.png', name: 'Koromaru', image: 'koromaru.png', text: 'Arf! Woof woof! (Selamat ulang tahun! Terus semangat, kehidupan ini baru awal kehidupan, aku akan selalu menggigit siapa saja yang membuatmu kesusahan!)' },
+    { bg: 'background.png', name: 'Narator', image: 'koromaru.png', text: 'Koromaru menempelkan kepalanya ke tangan Sandrina, lalu menggonggong sekali lagi seolah berkata "kamu aman di sini".' },
+
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Happy Birthday, Sandrina! Kamu hebat banget bisa ngadepin semua masalah dan ngemonitor teman-temanmu yang beban itu sendirian!' },
+    { bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png', text: 'Tapi kamu tau nggak? Orang yang paling sering ngasih ke orang lain tuh biasanya yang paling lupa ngasih ke diri sendiri. Padahal kamu juga pantes banget disayang.' },
     {
-        name: "Koromaru",
-        image: "koromaru.png",
-        text: "Arf! Woof woof! (Selamat ulang tahun! Terus semangat, kehidupan ini baru awal kehidupan, aku akan selalu menggigit siapa saja yang membuatmu kesusahan!)"
-    },
-    {
-        name: "Yukari Takeba",
-        image: "yukari.png",
-        text: "Happy Birthday, Sandrina! Kamu hebat banget bisa ngadepin semua masalah dan ngemonitor teman-temanmu yang beban itu sendirian!"
-    },
-    {
-        type: "choice",
-        name: "Yukari Takeba",
-        image: "yukari.png",
-        question: "Tolong jangan bikin dirimu menderita demi orang lain. Janji ya, kamu bakal mulai mencintai dirimu sendiri?",
+        type: 'choice', bg: 'background.png', name: 'Yukari Takeba', image: 'yukari.png',
+        question: 'Tolong jangan bikin dirimu menderita demi orang lain. Janji ya, kamu bakal mulai mencintai dirimu sendiri?',
         rejectionCount: 0,
         followUp: [
-            "Yeay! Nah gitu dong, Sandrina! Aku seneng banget dengernya.",
-            "Kamu tau nggak, orang yang paling sering ngasih ke orang lain tuh biasanya yang paling lupa ngasih ke diri sendiri. Padahal kamu juga pantes banget disayang.",
-            "Mulai dari hal kecil aja dulu. Tidur cukup, makan teratur, dan sesekali beli sesuatu yang kamu suka. Itu juga bentuk sayang sama diri sendiri lho."
+            'Yeay! Nah gitu dong, Sandrina! Aku seneng banget dengernya.',
+            'Kamu tau nggak, orang yang paling sering ngasih ke orang lain tuh biasanya yang paling lupa ngasih ke diri sendiri. Padahal kamu juga pantes banget disayang.',
+            'Mulai dari hal kecil aja dulu. Tidur cukup, makan teratur, dan sesekali beli sesuatu yang kamu suka. Itu juga bentuk sayang sama diri sendiri lho.'
         ],
         choices: [
-            { text: "Janji, aku bakal belajar mencintai diriku.", next: true },
+            { text: 'Janji, aku bakal belajar mencintai diriku.', next: true },
             {
-                text: "Kayaknya susah deh...",
+                text: 'Kayaknya susah deh...',
                 rejectTexts: [
-                    "Ihhh Sandrina! Gak mau tau, pokoknya harus janji! Masa sama diri sendiri aja gak sayang? Ayo pencet janji!",
-                    "Gak lucu tau memaksakan diri terus! Kamu itu berharga! Ayo bilang iya dan janji sama aku sekarang!",
-                    "Aduh... ngelihat kamu sehancur ini bikin aku sedih banget. Yaudah, untuk sekarang nggak perlu janji. Tapi aku mohon, tolong jangan lupakan kalau banyak orang yang sayang sama kamu, termasuk aku."
+                    'Ihhh Sandrina! Gak mau tau, pokoknya harus janji! Masa sama diri sendiri aja gak sayang? Ayo pencet janji!',
+                    'Gak lucu tau memaksakan diri terus! Kamu itu berharga! Ayo bilang iya dan janji sama aku sekarang!',
+                    'Aduh... ngelihat kamu sehancur ini bikin aku sedih banget. Yaudah, untuk sekarang nggak perlu janji. Tapi aku mohon, tolong jangan lupakan kalau banyak orang yang sayang sama kamu, termasuk aku.'
                 ]
             }
         ]
     },
+
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'San... dengerin kata mereka, ya. Semuanya di sini bener-bener happy hari ini buat ngerayain hari spesialmu.' },
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'Mulai sekarang, jangan memaksakan diri lagi buat orang-orang beban itu. Kamu bukan robot, kamu juga butuh istirahat.' },
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'Perjalanan kita masih sangat panjang, jangan pernah lelah dan putus asa. Kehidupan ini baru awal kehidupan.' },
     {
-        name: "Arshavin",
-        image: "",
-        text: "San... dengerin kata mereka, ya. Semuanya di sini bener-bener happy hari ini buat ngerayain hari spesialmu."
-    },
-    {
-        name: "Arshavin",
-        image: "",
-        text: "Mulai sekarang, jangan memaksakan diri lagi buat orang-orang beban itu. Kamu bukan robot, kamu juga butuh istirahat."
-    },
-    {
-        name: "Arshavin",
-        image: "",
-        text: "Perjalanan kita masih sangat panjang, jangan pernah lelah dan putus asa. Kehidupan ini baru awal kehidupan."
-    },
-    {
-        type: "choice",
-        name: "Arshavin",
-        image: "",
-        question: "Janji sama aku, kamu bakal terus bertahan, tetap kuat, dan janji nggak akan pernah nyerah?",
+        type: 'choice', bg: 'background.png', name: 'Arshavin', image: '',
+        question: 'Janji sama aku, kamu bakal terus bertahan, tetap kuat, dan janji nggak akan pernah nyerah?',
         rejectionCount: 0,
         followUp: [
-            "Makasih ya, San. Beneran, makasih udah mau janji. Aku lega banget dengernya.",
-            "Aku tau jalan ke depan nggak akan selalu mudah. Bakal ada hari yang berat, bakal ada orang yang bikin kesel. Tapi di hari-hari kayak gitu, kamu tinggal bilang aja ke aku, apa pun itu.",
-            "Kamu nggak harus selalu kuat di depan semua orang. Di depanku, kamu boleh jadi dirimu yang apa adanya."
+            'Makasih ya, San. Beneran, makasih udah mau janji. Aku lega banget dengernya.',
+            'Aku tau jalan ke depan nggak akan selalu mudah. Bakal ada hari yang berat, bakal ada orang yang bikin kesel. Tapi di hari-hari kayak gitu, kamu tinggal bilang aja ke aku, apa pun itu.',
+            'Kamu nggak harus selalu kuat di depan semua orang. Di depanku, kamu boleh jadi dirimu yang apa adanya.'
         ],
         choices: [
-            { text: "Iya Arshavin, aku janji.", next: true },
+            { text: 'Iya Arshavin, aku janji.', next: true },
             {
-                text: "Aku bener-bener capek...",
+                text: 'Aku bener-bener capek...',
                 rejectTexts: [
-                    "Aku tau kamu capek, San. Tapi aku nggak bakal biarin kamu nyerah di sini. Ayo klik janji, aku yakin kamu kuat ngelewatin semuanya.",
-                    "San, please... dengerin aku. Kamu nggak sendirian, ada aku di sini. Aku mohon, janjilah buat bertahan.",
-                    "Ya ampun... rasanya sesak banget denger kamu bilang gitu. San, kalau hari ini emang udah terlalu berat, gapapa buat berhenti sejenak. Aku akan tetep di sini meluk kamu, dengerin kamu, sampai kamu siap buat senyum lagi."
+                    'Aku tau kamu capek, San. Tapi aku nggak bakal biarin kamu nyerah di sini. Ayo klik janji, aku yakin kamu kuat ngelewatin semuanya.',
+                    'San, please... dengerin aku. Kamu nggak sendirian, ada aku di sini. Aku mohon, janjilah buat bertahan.',
+                    'Ya ampun... rasanya sesak banget denger kamu bilang gitu. San, kalau hari ini emang udah terlalu berat, gapapa buat berhenti sejenak. Aku akan tetep di sini meluk kamu, dengerin kamu, sampai kamu siap buat senyum lagi.'
                 ]
             }
         ]
     },
-    {
-        name: "Arshavin",
-        image: "",
-        text: "Selamat ulang tahun yang ke-16, Sandrina. Semoga sehat selalu. Oh ya, ada beberapa surat dari mereka yang nggak bisa datang hari ini..."
-    }
+
+    { bg: 'background.png', name: 'Arshavin', image: '', text: 'Selamat ulang tahun yang ke-16, Sandrina. Semoga sehat selalu. Oh ya, ada beberapa surat dari mereka yang nggak bisa datang hari ini...' }
 ];
+
+const epilogue = [
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Cahaya biru memudar. Sandrina membuka mata dan mendapati dirinya kembali di koridor UDINUS. Sore masih sama seperti saat mereka masuk—langit keemasan, angin hangat, dan lampu lorong yang menyala lembut.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: '...Kita udah balik. Kamu nggak apa-apa?' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: 'Aku... nggak apa-apa. Cuma butuh waktu buat percaya kalau tadi itu beneran terjadi.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Hehe. Nanti juga kamu percaya. Mungkin besok, mungkin minggu depan. Atau mungkin pas kamu lihat lilin di kue ulang tahunmu lagi.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Mereka berjalan pelan menyusuri koridor UDINUS. Sore masih muda, dan bayangan mereka memanjang di lantai keramik yang memantulkan cahaya jingga. Arshavin beberapa kali melirik Sandrina, lalu menunduk, mengumpulkan keberanian.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'San... aku mau nanya sesuatu. Jujur ya. Nggak usah mikir panjang.' },
+    { bg: 'udinus.jpg', name: 'Sandrina', image: '', text: '...Nanya apa?' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Setelah semua yang kamu lihat tadi... setelah semua yang kamu dengar dari mereka... kamu masih mencintai aku nggak?' },
+    {
+        type: 'choice', bg: 'udinus.jpg', name: 'Arshavin', image: '',
+        question: '...Jujur aja. Aku nggak akan marah, kok.',
+        choices: [
+            { text: 'Aku... nggak tahu.', reply: 'Hahaha... oke, oke. Jawaban jujur. Aku hargai itu. Aku nggak akan maksa kamu buat jawab sekarang. Aku tetap di sini kok, San.' },
+            { text: 'Iya. Aku masih.', reply: 'E-eh... beneran? Aku... aduh. Untung ini cuma visual novel. Kalau aku beneran dengar langsung, mungkin aku udah salting setengah mati sekarang. Tapi... makasih, San. Beneran, makasih.' }
+        ]
+    },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Arshavin tertawa kecil, menutupi wajahnya dengan tangan. Sore itu terasa lebih hangat dari sebelumnya, seolah matahari sengaja berlama-lama di langit Semarang.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Sandrina... walau diriku yang kamu baca ini hanyalah visual novel, dan walau aku cuma kumpulan baris kode dan teks... percayalah, diriku ini akan selalu mendukungmu.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Di dunia nyata sana, kamu punya banyak hal yang harus kamu hadapi. Capek, sedih, kesel, semuanya. Tapi kamu nggak sendiri. Ada orang-orang yang sayang sama kamu. Dan ada aku, walau cuma dalam bentuk begini.' },
+    { bg: 'udinus.jpg', name: 'Arshavin', image: '', text: 'Selamat ulang tahun yang ke-16, Sandrina. Terus bertahan, terus tumbuh, dan jangan lupa istirahat. Aku akan selalu ada di sini, di halaman ini, kapan pun kamu mau kembali.' },
+    { bg: 'udinus.jpg', name: 'Narator', image: '', text: 'Langit sore di atas UDINUS masih berwarna keemasan saat mereka melangkah keluar dari koridor. Dan di kejauhan, seolah menjawab, sekumpulan kembang api kecil meletus pelan di langit yang belum gelap.' }
+];
+
+let currentScript = story;
 
 const letters = [
     "Untuk Sandrina...\n\nSelamat ulang tahun. Maaf aku tidak bisa hadir karena ada urusan penting Kirijo Group yang mendesak. Tetaplah menjadi sosok yang kuat dan elegan dalam menghadapi apapun.\n\n- Mitsuru Kirijo (Persona 3)",
@@ -858,23 +739,32 @@ const letters = [
     "San, ini aku lagi.\n\nAku cuma mau bilang kalau aku beruntung banget bisa kenal dan ada di sampingmu. Tolong jaga dirimu baik-baik, jangan pernah menyerah.\n\nI love you.\n- Arshavin"
 ];
 
+function updateNavButtons() {
+    if (gameState === 'DIALOGUE') {
+        const data = currentScript[currentLine];
+        dialogBackBtn.style.display = (currentLine > 0 && !isChoiceActive && !isTransitioning) ? 'block' : 'none';
+        const canNext = data && !isTyping && !isChoiceActive && !isTransitioning &&
+            (data.type !== 'choice' || data.isResolved);
+        dialogNextBtn.style.display = canNext ? 'block' : 'none';
+    } else if (gameState === 'LETTER') {
+        letterBackBtn.style.display = isTransitioning ? 'none' : 'block';
+        letterNextBtn.style.display = (!isLetterTyping && !isTransitioning) ? 'block' : 'none';
+    } else {
+        dialogBackBtn.style.display = 'none';
+        dialogNextBtn.style.display = 'none';
+        letterBackBtn.style.display = 'none';
+        letterNextBtn.style.display = 'none';
+    }
+}
+
 function showSprite(data) {
-    if (!data.image) {
-        characterSpriteEl.style.opacity = 0;
-        return;
-    }
-
+    if (!data.image) { characterSpriteEl.style.opacity = 0; return; }
     const current = characterSpriteEl.getAttribute('src') || '';
-    if (current === data.image) {
-        characterSpriteEl.style.opacity = 1;
-        return;
-    }
-
+    if (current === data.image) { characterSpriteEl.style.opacity = 1; return; }
     characterSpriteEl.style.opacity = 0;
-
     const img = new Image();
     const apply = () => {
-        if (gameState !== 'DIALOGUE' || story[currentLine] !== data) return;
+        if (gameState !== 'DIALOGUE' || currentScript[currentLine] !== data) return;
         characterSpriteEl.src = data.image;
         characterSpriteEl.style.opacity = 1;
     };
@@ -884,11 +774,16 @@ function showSprite(data) {
 }
 
 function renderDialogue(idx) {
-    const currentData = story[idx];
+    const currentData = currentScript[idx];
     if (!currentData) return;
+
+    if (currentData.music === 'persona') switchToPersonaMusic();
+    setBackground(currentData.bg || 'background.png');
 
     inFollowUp = false;
     followUpIndex = 0;
+    isChoiceActive = false;
+    choiceContainer.style.display = 'none';
 
     if (currentData.type === 'choice') {
         currentData.isResolved = false;
@@ -899,13 +794,29 @@ function renderDialogue(idx) {
     showSprite(currentData);
 
     const text = currentData.type === 'choice' ? currentData.question : currentData.text;
-
     updateNavButtons();
     typeWriter(text, () => {
-        if (currentData.type === 'choice') {
-            showChoices(currentData);
-        }
+        if (currentData.type === 'choice') showChoices(currentData);
     });
+}
+
+function typeWriter(text, callback) {
+    isTyping = true;
+    dialogueTextEl.textContent = '';
+    updateNavButtons();
+    let i = 0;
+    clearInterval(typeInterval);
+    typeInterval = setInterval(() => {
+        dialogueTextEl.textContent += text.charAt(i);
+        dialogueTextEl.scrollTop = dialogueTextEl.scrollHeight;
+        i++;
+        if (i >= text.length) {
+            clearInterval(typeInterval);
+            isTyping = false;
+            updateNavButtons();
+            if (callback) callback();
+        }
+    }, 16);
 }
 
 function advanceDialogue(e) {
@@ -916,7 +827,7 @@ function advanceDialogue(e) {
     playClick();
 
     if (inFollowUp) {
-        const data = story[currentLine];
+        const data = currentScript[currentLine];
         followUpIndex++;
         if (data && data.followUp && followUpIndex < data.followUp.length) {
             typeWriter(data.followUp[followUpIndex]);
@@ -927,14 +838,15 @@ function advanceDialogue(e) {
 
     currentLine++;
 
-    if (currentLine >= story.length) {
+    if (currentLine >= currentScript.length) {
+        if (inEpilogue) { showEndingPhoto(); return; }
+
         isTransitioning = true;
         updateNavButtons();
-
         clearInterval(typeInterval);
         fadeBlackEl.style.opacity = '1';
-        dialogueTextEl.textContent = "...";
-        speakerNameEl.textContent = "";
+        dialogueTextEl.textContent = '...';
+        speakerNameEl.textContent = '';
 
         setTimeout(() => {
             gameContainerEl.style.display = 'none';
@@ -982,53 +894,34 @@ function showChoices(choiceData) {
                 return;
             }
 
+            if (c.reply) {
+                choiceData.isResolved = true;
+                speakerNameEl.textContent = choiceData.name;
+                typeWriter(c.reply, () => { updateNavButtons(); });
+                return;
+            }
+
             choiceData.rejectionCount += 1;
             const count = choiceData.rejectionCount;
             speakerNameEl.textContent = choiceData.name;
 
             if (count <= 2) {
-                typeWriter(c.rejectTexts[count - 1], () => {
-                    showChoices(choiceData);
-                });
+                typeWriter(c.rejectTexts[count - 1], () => { showChoices(choiceData); });
             } else {
                 choiceData.isResolved = true;
-                typeWriter(c.rejectTexts[2], () => {
-                    updateNavButtons();
-                });
+                typeWriter(c.rejectTexts[2], () => { updateNavButtons(); });
             }
         };
         choiceContainer.appendChild(btn);
     });
 }
 
-function typeWriter(text, callback) {
-    isTyping = true;
-    dialogueTextEl.textContent = '';
-    updateNavButtons();
-
-    let i = 0;
-    clearInterval(typeInterval);
-    typeInterval = setInterval(() => {
-        dialogueTextEl.textContent += text.charAt(i);
-        dialogueTextEl.scrollTop = dialogueTextEl.scrollHeight;
-        i++;
-        if (i >= text.length) {
-            clearInterval(typeInterval);
-            isTyping = false;
-            updateNavButtons();
-            if (callback) callback();
-        }
-    }, 18);
-}
-
 function renderLetter(idx) {
     letterContentEl.textContent = '';
     isLetterTyping = true;
     updateNavButtons();
-
     const text = letters[idx];
     let i = 0;
-
     clearInterval(letterInterval);
     letterInterval = setInterval(() => {
         letterContentEl.textContent += text.charAt(i);
@@ -1038,7 +931,7 @@ function renderLetter(idx) {
             isLetterTyping = false;
             updateNavButtons();
         }
-    }, 18);
+    }, 16);
 }
 
 function advanceLetter(e) {
@@ -1065,7 +958,7 @@ function advanceLetter(e) {
                 startFireworks();
                 setTimeout(() => {
                     fwContinueBtn.classList.add('visible');
-                }, 6000);
+                }, 6500);
             }, 100);
         }, 1500);
         return;
@@ -1082,14 +975,9 @@ function goBack(e) {
     playClick();
 
     if (gameState === 'DIALOGUE') {
-        if (inFollowUp) {
-            renderDialogue(currentLine);
-            return;
-        }
-        if (currentLine > 0 && !isChoiceActive) {
-            currentLine--;
-            renderDialogue(currentLine);
-        }
+        if (isChoiceActive) return;
+        if (inFollowUp) { renderDialogue(currentLine); return; }
+        if (currentLine > 0) { currentLine--; renderDialogue(currentLine); }
     } else if (gameState === 'LETTER') {
         if (currentLetterIdx > 0) {
             currentLetterIdx--;
@@ -1105,7 +993,9 @@ function goBack(e) {
                 fadeBlackEl.style.opacity = '0';
                 gameState = 'DIALOGUE';
                 isTransitioning = false;
+                currentScript = story;
                 currentLine = story.length - 1;
+                inEpilogue = false;
                 renderDialogue(currentLine);
             }, 1000);
         }
@@ -1115,16 +1005,9 @@ function goBack(e) {
 const fwCanvas = document.getElementById('fireworks-canvas');
 const fwCtx = fwCanvas.getContext('2d');
 
-let fwWidth = 0;
-let fwHeight = 0;
-let fwRunning = false;
-let fwFrame = null;
-let fwLastRocket = 0;
-let fwLastHeart = 0;
-let fwRocketCount = 0;
-let fwRockets = [];
-let fwSparks = [];
-let fwHearts = [];
+let fwWidth = 0, fwHeight = 0, fwRunning = false, fwFrame = null;
+let fwLastRocket = 0, fwLastHeart = 0, fwLastGlitter = 0, fwRocketCount = 0;
+let fwRockets = [], fwSparks = [], fwHearts = [], fwStars = [], fwGlitters = [];
 
 function resizeFireworks() {
     const dpr = window.devicePixelRatio || 1;
@@ -1136,6 +1019,17 @@ function resizeFireworks() {
     fwCtx.globalCompositeOperation = 'source-over';
     fwCtx.fillStyle = '#02060f';
     fwCtx.fillRect(0, 0, fwWidth, fwHeight);
+}
+
+function initStars() {
+    fwStars = [];
+    for (let i = 0; i < 110; i++) {
+        fwStars.push({
+            x: Math.random() * fwWidth, y: Math.random() * fwHeight * 0.78,
+            r: 0.35 + Math.random() * 1.5, p: Math.random() * Math.PI * 2,
+            s: 0.012 + Math.random() * 0.028
+        });
+    }
 }
 
 function drawHeart(x, y, size, color, alpha) {
@@ -1157,75 +1051,89 @@ function spawnHeart(scatter) {
     fwHearts.push({
         x: Math.random() * fwWidth,
         y: scatter ? Math.random() * fwHeight : fwHeight + 30,
-        size: 14 + Math.random() * 26,
-        speed: 0.8 + Math.random() * 1.4,
-        sway: 0.3 + Math.random() * 0.6,
-        phase: Math.random() * Math.PI * 2,
-        alpha: 0.35 + Math.random() * 0.5,
-        hue: 335 + Math.random() * 30
+        size: 12 + Math.random() * 26, speed: 0.7 + Math.random() * 1.5,
+        sway: 0.3 + Math.random() * 0.7, phase: Math.random() * Math.PI * 2,
+        alpha: 0.32 + Math.random() * 0.55, hue: 330 + Math.random() * 35
     });
+}
+
+function pushSpark(x, y, vx, vy, hue, size, decay, friction, gravity, trail) {
+    fwSparks.push({ x, y, px: x, py: y, vx, vy, alpha: 1, decay, hue, size, friction, gravity, trail });
 }
 
 function launchRocket() {
     fwRocketCount++;
-    const heart = fwRocketCount % 3 === 0;
+    let type = 'burst';
+    const m = fwRocketCount % 7;
+    if (m === 0) type = 'heart';
+    else if (m === 2) type = 'ring';
+    else if (m === 4) type = 'double';
+    else if (m === 6) type = 'palm';
+    const hue = type === 'heart' ? 335 + Math.random() * 25 : Math.random() * 360;
     fwRockets.push({
-        x: fwWidth * (0.12 + Math.random() * 0.76),
-        y: fwHeight + 10,
-        vy: -(fwHeight * 0.012 + Math.random() * 2),
-        targetY: fwHeight * (0.18 + Math.random() * 0.32),
-        hue: heart ? 335 + Math.random() * 25 : Math.random() * 360,
-        heart: heart
+        x: fwWidth * (0.08 + Math.random() * 0.84), y: fwHeight + 10,
+        vy: -(fwHeight * 0.0125 + Math.random() * 2.2),
+        targetY: fwHeight * (0.15 + Math.random() * 0.35), hue, type
     });
 }
 
-function explode(x, y, hue, heart) {
+function explode(x, y, hue, type) {
     const base = Math.min(fwWidth, fwHeight);
+    const power = base * 0.0088;
 
-    if (heart) {
-        const k = base * 0.00058;
-        const count = 72;
+    if (type === 'heart') {
+        const k = base * 0.00062, count = 78;
         for (let i = 0; i < count; i++) {
             const t = (i / count) * Math.PI * 2;
             const hx = 16 * Math.pow(Math.sin(t), 3);
             const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-            fwSparks.push({
-                x: x,
-                y: y,
-                vx: hx * k,
-                vy: hy * k,
-                alpha: 1,
-                decay: 0.008 + Math.random() * 0.004,
-                hue: hue,
-                size: 2.6,
-                friction: 0.95,
-                gravity: 0.012
-            });
+            pushSpark(x, y, hx * k, hy * k, hue, 2.6, 0.0075 + Math.random() * 0.004, 0.95, 0.012, true);
+        }
+    } else if (type === 'ring') {
+        const count = 70, speed = power * 1.1;
+        for (let i = 0; i < count; i++) {
+            const a = (i / count) * Math.PI * 2;
+            pushSpark(x, y, Math.cos(a) * speed, Math.sin(a) * speed, hue + (Math.random() * 16 - 8), 2.2, 0.009 + Math.random() * 0.004, 0.965, 0.012, true);
+        }
+    } else if (type === 'double') {
+        const count = 48;
+        for (let i = 0; i < count; i++) {
+            const a = (i / count) * Math.PI * 2;
+            pushSpark(x, y, Math.cos(a) * power * 0.62, Math.sin(a) * power * 0.62, hue, 2.1, 0.0095, 0.96, 0.014, true);
+            pushSpark(x, y, Math.cos(a + 0.06) * power * 1.12, Math.sin(a + 0.06) * power * 1.12, hue + 40, 2.4, 0.0085, 0.965, 0.011, true);
+        }
+    } else if (type === 'palm') {
+        const count = 42;
+        for (let i = 0; i < count; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const sp = power * 0.35 + Math.random() * power * 0.75;
+            pushSpark(x, y, Math.cos(a) * sp, Math.sin(a) * sp, hue + (Math.random() * 26 - 13), 2.4, 0.0055, 0.985, 0.028, true);
         }
     } else {
-        const count = 70 + Math.floor(Math.random() * 30);
-        const power = base * 0.0085;
+        const count = 78 + Math.floor(Math.random() * 34);
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const speed = power * 0.2 + Math.random() * power;
-            fwSparks.push({
-                x: x,
-                y: y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                alpha: 1,
-                decay: 0.012 + Math.random() * 0.012,
-                hue: hue + (Math.random() * 30 - 15),
-                size: 2,
-                friction: 0.96,
-                gravity: 0.03
-            });
+            const speed = power * 0.18 + Math.random() * power;
+            pushSpark(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, hue + (Math.random() * 34 - 17), 1.9 + Math.random() * 0.8, 0.011 + Math.random() * 0.012, 0.958, 0.03, true);
         }
     }
 
-    if (fwSparks.length > 1400) {
-        fwSparks.splice(0, fwSparks.length - 1400);
+    for (let i = 0; i < 10; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = power * 0.2 + Math.random() * power * 0.5;
+        pushSpark(x, y, Math.cos(a) * sp, Math.sin(a) * sp, 48 + Math.random() * 12, 1.6, 0.014, 0.97, 0.02, false);
     }
+
+    if (fwSparks.length > 1800) fwSparks.splice(0, fwSparks.length - 1800);
+}
+
+function spawnGlitter() {
+    fwGlitters.push({
+        x: Math.random() * fwWidth, y: -10,
+        vx: (Math.random() - 0.5) * 0.6, vy: 0.7 + Math.random() * 1.2,
+        size: 1 + Math.random() * 2.2, alpha: 0.6 + Math.random() * 0.4,
+        hue: 40 + Math.random() * 20, phase: Math.random() * Math.PI * 2
+    });
 }
 
 function fireworksLoop(ts) {
@@ -1233,18 +1141,35 @@ function fireworksLoop(ts) {
 
     fwCtx.globalCompositeOperation = 'source-over';
     fwCtx.globalAlpha = 1;
-    fwCtx.fillStyle = 'rgba(2, 6, 15, 0.2)';
+    fwCtx.fillStyle = 'rgba(2, 6, 15, 0.19)';
     fwCtx.fillRect(0, 0, fwWidth, fwHeight);
 
-    if (ts - fwLastRocket > 650) {
+    for (let i = 0; i < fwStars.length; i++) {
+        const st = fwStars[i];
+        st.p += st.s;
+        fwCtx.globalAlpha = 0.25 + 0.75 * Math.abs(Math.sin(st.p));
+        fwCtx.fillStyle = '#cfe6ff';
+        fwCtx.beginPath();
+        fwCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+        fwCtx.fill();
+    }
+    fwCtx.globalAlpha = 1;
+
+    if (ts - fwLastRocket > 520) {
         launchRocket();
-        if (Math.random() < 0.35) launchRocket();
+        if (Math.random() < 0.45) launchRocket();
+        if (Math.random() < 0.25) launchRocket();
         fwLastRocket = ts;
     }
-
-    if (ts - fwLastHeart > 320) {
+    if (ts - fwLastHeart > 300) {
         spawnHeart(false);
+        if (Math.random() < 0.5) spawnHeart(false);
         fwLastHeart = ts;
+    }
+    if (ts - fwLastGlitter > 260) {
+        spawnGlitter();
+        if (Math.random() < 0.6) spawnGlitter();
+        fwLastGlitter = ts;
     }
 
     for (let i = fwHearts.length - 1; i >= 0; i--) {
@@ -1252,70 +1177,84 @@ function fireworksLoop(ts) {
         h.y -= h.speed;
         h.phase += 0.03;
         h.x += Math.sin(h.phase) * h.sway;
-        if (h.y < -h.size - 10) {
-            fwHearts.splice(i, 1);
-            continue;
-        }
-        drawHeart(h.x, h.y, h.size, 'hsl(' + h.hue + ', 90%, 62%)', h.alpha);
+        if (h.y < -h.size - 10) { fwHearts.splice(i, 1); continue; }
+        drawHeart(h.x, h.y, h.size, 'hsl(' + h.hue + ', 92%, 64%)', h.alpha);
     }
 
     fwCtx.globalCompositeOperation = 'lighter';
+    for (let i = fwGlitters.length - 1; i >= 0; i--) {
+        const g = fwGlitters[i];
+        g.phase += 0.06;
+        g.x += g.vx + Math.sin(g.phase) * 0.4;
+        g.y += g.vy;
+        g.alpha -= 0.0025;
+        if (g.y > fwHeight + 20 || g.alpha <= 0) { fwGlitters.splice(i, 1); continue; }
+        fwCtx.globalAlpha = Math.max(0, g.alpha);
+        fwCtx.fillStyle = 'hsl(' + g.hue + ', 100%, 70%)';
+        fwCtx.beginPath();
+        fwCtx.arc(g.x, g.y, g.size, 0, Math.PI * 2);
+        fwCtx.fill();
+    }
 
     for (let i = fwRockets.length - 1; i >= 0; i--) {
         const r = fwRockets[i];
+        const prevY = r.y;
         r.y += r.vy;
         fwCtx.globalAlpha = 1;
-        fwCtx.fillStyle = 'hsl(' + r.hue + ', 100%, 75%)';
+        fwCtx.strokeStyle = 'hsl(' + r.hue + ', 100%, 78%)';
+        fwCtx.lineWidth = 2.2;
+        fwCtx.beginPath();
+        fwCtx.moveTo(r.x, prevY);
+        fwCtx.lineTo(r.x, r.y);
+        fwCtx.stroke();
+        fwCtx.fillStyle = '#ffffff';
         fwCtx.beginPath();
         fwCtx.arc(r.x, r.y, 2.2, 0, Math.PI * 2);
         fwCtx.fill();
-        if (r.y <= r.targetY) {
-            explode(r.x, r.y, r.hue, r.heart);
-            fwRockets.splice(i, 1);
-        }
+        if (r.y <= r.targetY) { explode(r.x, r.y, r.hue, r.type); fwRockets.splice(i, 1); }
     }
 
     for (let i = fwSparks.length - 1; i >= 0; i--) {
         const s = fwSparks[i];
-        s.vx *= s.friction;
-        s.vy *= s.friction;
-        s.vy += s.gravity;
-        s.x += s.vx;
-        s.y += s.vy;
+        s.px = s.x; s.py = s.y;
+        s.vx *= s.friction; s.vy *= s.friction; s.vy += s.gravity;
+        s.x += s.vx; s.y += s.vy;
         s.alpha -= s.decay;
-        if (s.alpha <= 0) {
-            fwSparks.splice(i, 1);
-            continue;
-        }
+        if (s.alpha <= 0) { fwSparks.splice(i, 1); continue; }
         fwCtx.globalAlpha = s.alpha;
-        fwCtx.fillStyle = 'hsl(' + s.hue + ', 100%, 65%)';
-        fwCtx.beginPath();
-        fwCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        fwCtx.fill();
+        if (s.trail) {
+            fwCtx.strokeStyle = 'hsl(' + s.hue + ', 100%, 66%)';
+            fwCtx.lineWidth = Math.max(0.5, s.size * 0.85);
+            fwCtx.beginPath();
+            fwCtx.moveTo(s.px, s.py);
+            fwCtx.lineTo(s.x, s.y);
+            fwCtx.stroke();
+        } else {
+            fwCtx.fillStyle = 'hsl(' + s.hue + ', 100%, 70%)';
+            fwCtx.beginPath();
+            fwCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            fwCtx.fill();
+        }
     }
 
     fwCtx.globalAlpha = 1;
     fwCtx.globalCompositeOperation = 'source-over';
-
     fwFrame = requestAnimationFrame(fireworksLoop);
 }
 
 function startFireworks() {
     resizeFireworks();
-    fwRockets = [];
-    fwSparks = [];
-    fwHearts = [];
+    initStars();
+    fwRockets = []; fwSparks = []; fwHearts = []; fwGlitters = [];
     fwRocketCount = 0;
     fwContinueBtn.classList.remove('visible');
-
-    for (let i = 0; i < 12; i++) {
-        spawnHeart(true);
-    }
-
+    for (let i = 0; i < 16; i++) spawnHeart(true);
     const now = performance.now();
     fwLastRocket = now - 600;
     fwLastHeart = now;
+    fwLastGlitter = now;
     fwRunning = true;
+    playKembangapi();
     fwFrame = requestAnimationFrame(fireworksLoop);
 }
 
@@ -1323,11 +1262,11 @@ function stopFireworks() {
     fwRunning = false;
     if (fwFrame) cancelAnimationFrame(fwFrame);
     fwFrame = null;
+    stopKembangapi();
 }
 
-function showEnding() {
+function startEpilogue() {
     if (gameState !== 'FIREWORKS' || isTransitioning) return;
-
     isTransitioning = true;
     playClick();
     fireworksScreenEl.style.opacity = '0';
@@ -1335,6 +1274,26 @@ function showEnding() {
     setTimeout(() => {
         stopFireworks();
         fireworksScreenEl.style.display = 'none';
+        gameContainerEl.style.display = 'flex';
+        currentScript = epilogue;
+        currentLine = 0;
+        inEpilogue = true;
+        isTransitioning = false;
+        gameState = 'DIALOGUE';
+        setBackground('udinus.jpg');
+        fadeBlackEl.style.opacity = '0';
+        choiceContainer.style.display = 'none';
+        renderDialogue(0);
+    }, 1500);
+}
+
+function showEndingPhoto() {
+    isTransitioning = true;
+    updateNavButtons();
+    fadeBlackEl.style.opacity = '1';
+
+    setTimeout(() => {
+        gameContainerEl.style.display = 'none';
         endingScreenEl.style.display = 'flex';
         setTimeout(() => {
             endingScreenEl.style.opacity = '1';
@@ -1342,17 +1301,19 @@ function showEnding() {
             isTransitioning = false;
             updateNavButtons();
         }, 100);
-    }, 1500);
+    }, 1100);
 }
 
 fireworksScreenEl.addEventListener('pointerdown', (e) => {
     if (gameState !== 'FIREWORKS' || e.target === fwContinueBtn) return;
-    const heart = Math.random() < 0.5;
-    explode(e.clientX, e.clientY, heart ? 335 + Math.random() * 25 : Math.random() * 360, heart);
+    const types = ['burst', 'heart', 'ring', 'palm', 'double'];
+    const t = types[Math.floor(Math.random() * types.length)];
+    const hue = t === 'heart' ? 335 + Math.random() * 25 : Math.random() * 360;
+    explode(e.clientX, e.clientY, hue, t);
 });
 
 window.addEventListener('resize', () => {
-    if (fwRunning) resizeFireworks();
+    if (fwRunning) { resizeFireworks(); initStars(); }
 });
 </script>
 </body>
