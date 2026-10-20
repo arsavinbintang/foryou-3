@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 16th Birthday Sandrina</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Jost', sans-serif;
+    background-color: #000;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* LAYAR LOADING */
+#loading-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #001122;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #66B2FF;
+    transition: opacity 0.5s ease-in-out;
+}
+#loading-text {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    animation: blink 1s infinite;
+}
+.loading-bar-container {
+    width: 300px;
+    height: 10px;
+    background: #002b5e;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #66B2FF;
+}
+#loading-bar {
+    width: 0%;
+    height: 100%;
+    background: #66B2FF;
+    transition: width 0.3s;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(0, 15, 35, 0.3) 0%, rgba(0, 10, 25, 0.6) 100%);
+    z-index: 1;
+}
+
+#back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 15, 40, 0.8);
+    color: #66B2FF;
+    border: 2px solid #66B2FF;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: 'Jost', sans-serif;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 50;
+    display: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#back-btn:hover {
+    background: #66B2FF;
+    color: #000;
+    transform: scale(1.05);
+}
+
+#character-sprite {
+    position: absolute;
+    bottom: 12%;
+    left: 15%;
+    height: 80vh;
+    max-width: 45vw;
+    object-fit: contain;
+    z-index: 3;
+    transition: opacity 0.3s ease-in-out;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
+    opacity: 0;
+}
+
+#dialogue-box {
+    position: relative;
+    width: 85vw;
+    max-width: 1200px;
+    height: 26vh;
+    min-height: 160px;
+    background: linear-gradient(135deg, rgba(0, 30, 75, 0.95) 0%, rgba(0, 10, 30, 0.95) 100%);
+    border: 3px solid #66B2FF;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    padding: 1.8rem 2.5rem;
+    z-index: 4;
+    box-shadow: 0px 0px 25px rgba(102, 178, 255, 0.4);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+#speaker-name {
+    position: absolute;
+    top: -24px;
+    left: -15px;
+    background-color: #000;
+    color: #fff;
+    padding: 6px 28px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border: 2px solid #66B2FF;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: skewX(-12deg);
+    box-shadow: 3px 3px 0 #0044aa;
+}
+
+#dialogue-text {
+    color: #fff;
+    font-size: 1.35rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px #000;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 15px;
+}
+
+#dialogue-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+#dialogue-text::-webkit-scrollbar-thumb {
+    background: #66B2FF;
+    border-radius: 3px;
+}
+
+#next-indicator {
+    position: absolute;
+    bottom: 12px;
+    right: 25px;
+    color: #66B2FF;
+    font-weight: bold;
+    font-size: 1.4rem;
+    animation: blink 0.8s infinite;
+    display: none;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+#choice-container {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 20;
+    width: 80%;
+    max-width: 600px;
+}
+
+.choice-btn {
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.95), rgba(0, 15, 40, 0.95));
+    border: 2px solid #66B2FF;
+    color: #fff;
+    padding: 15px 25px;
+    font-size: 1.3rem;
+    font-family: 'Jost', sans-serif;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 0 15px rgba(102, 178, 255, 0.3);
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.choice-btn:hover {
+    background: #66B2FF;
+    color: #000;
+    transform: scale(1.05);
+}
+
+#fade-black {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: black;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-in-out;
+}
+
+#letter-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 20;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    cursor: pointer;
+}
+
+.letter-paper {
+    background: #fdfbf7;
+    width: 90%;
+    max-width: 650px;
+    padding: 50px 40px;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+    position: relative;
+    color: #333;
+    font-family: 'Caveat', cursive;
+}
+
+.letter-paper::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 2px dashed #d1c7b7;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+#letter-content {
+    font-size: 2rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+}
+
+.letter-hint {
+    text-align: right;
+    font-family: 'Jost', sans-serif;
+    font-size: 1.2rem;
+    color: #888;
+    margin-top: 20px;
+    animation: blink 1.5s infinite;
+    display: none;
+}
+
+#ending-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #111;
+    z-index: 40;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1.8s ease-in-out;
+}
+
+#ending-photo {
+    max-height: 75vh;
+    max-width: 85vw;
+    border: 15px solid #fff;
+    border-bottom-width: 45px;
+    border-radius: 2px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    transform: rotate(-2deg);
+    transition: transform 0.4s ease-out;
+    background-color: #fff;
+    object-fit: contain;
+}
+
+#ending-photo:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+</style>
+</head>
+<body>
+
+<audio id="bgm" src="lagu.mp3" loop></audio>
+<audio id="sfx-click" src="https://www.myinstants.com/media/sounds/click.mp3"></audio>
+
+<!-- LAYAR LOADING -->
+<div id="loading-screen">
+    <div id="loading-text">Mempersiapkan Kejutan... <span id="loading-percent">0%</span></div>
+    <div class="loading-bar-container">
+        <div id="loading-bar"></div>
+    </div>
+</div>
+
+<button id="back-btn" onclick="goBack(event)">◀ KEMBALI</button>
+
+<div id="game-container" onclick="advanceDialogue()">
+    <div id="overlay"></div>
+    <img id="character-sprite" src="" alt="">
+
+    <div id="choice-container"></div>
+
+    <div id="dialogue-box">
+        <div id="speaker-name">Narator</div>
+        <div id="dialogue-text"></div>
+        <div id="next-indicator">▼</div>
+    </div>
+
+    <div id="fade-black"></div>
+</div>
+
+<div id="letter-screen" onclick="advanceLetter()">
+    <div class="letter-paper">
+        <div id="letter-content"></div>
+        <div class="letter-hint" id="letter-indicator">Tap layar untuk melanjutkan ▼</div>
+    </div>
+</div>
+
+<div id="ending-screen">
+    <img id="ending-photo" src="foto-akhir.png" alt="Foto Kenangan">
+</div>
+
+<script>
+// --- SISTEM PRELOADER ASSET ---
+const assetsToLoad = [
+    'background.png',
+    'junpei.png',
+    'akihiko.png',
+    'shinjiro.png',
+    'makoto.png',
+    'koromaru.png',
+    'yukari.png',
+    'arshavin.png',
+    'foto-akhir.png'
+];
+
+let loadedAssets = 0;
+
+function preloadAssets() {
+    if (assetsToLoad.length === 0) {
+        finishLoading();
+        return;
+    }
+
+    assetsToLoad.forEach(src => {
+        const img = new Image();
+        img.onload = () => updateLoadingProgress();
+        img.onerror = () => {
+            console.warn("Gagal memuat gambar: " + src + ". Pastikan nama file (huruf besar/kecil) persis sama di GitHub!");
+            updateLoadingProgress(); // Tetap jalan meskipun error agar tidak stuck
+        };
+        img.src = src;
+    });
+}
+
+function updateLoadingProgress() {
+    loadedAssets++;
+    let percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
+    document.getElementById('loading-percent').innerText = percent + "%";
+    document.getElementById('loading-bar').style.width = percent + "%";
+
+    if (loadedAssets === assetsToLoad.length) {
+        setTimeout(finishLoading, 500);
+    }
+}
+
+function finishLoading() {
+    const loader = document.getElementById('loading-screen');
+    loader.style.opacity = '0';
+    setTimeout(() => {
+        loader.style.display = 'none';
+        document.getElementById('game-container').style.display = 'flex';
+        renderDialogue(currentLine); // Mulai game
+    }, 500);
+}
+
+// Menjalankan preloader saat web dibuka
+window.onload = preloadAssets;
+// ---------------------------------
+
+const bgm = document.getElementById('bgm');
+const clickSfx = document.getElementById('sfx-click');
+
+let audioStarted = false;
+let currentLine = 0;
+let isTyping = false;
+let typeInterval;
+let isChoiceActive = false;
+let activeDialogueText = "";
+
+let currentLetterIdx = 0;
+let isLetterTyping = false;
+let letterInterval;
+
+let gameState = 'DIALOGUE';
+
+function playClick() {
+    clickSfx.currentTime = 0;
+    clickSfx.play().catch(()=>{});
+}
+
+const story = [
+    {
+        name: "Narator",
+        image: "",
+        text: "Hari ini adalah hari yang sangat spesial. Di dunia yang mempertemukan realita dan keajaiban Persona, Sandrina tengah merayakan ulang tahunnya yang ke-16."
+    },
+    {
+        name: "Narator",
+        image: "",
+        text: "Suasana pesta terasa begitu hangat dan meriah, dihadiri oleh teman-teman dari SEES dan tentu saja, Arshavin, yang sudah mempersiapkan banyak hal untuk hari ini."
+    },
+    {
+        name: "Junpei Iori",
+        image: "junpei.png",
+        text: "Yo, Sandrina! Selamat ulang tahun ke-16 hari ini! Semoga sehat selalu ya! Lo beneran keren abis udah bertahan sejauh ini."
+    },
+    {
+        name: "Junpei Iori",
+        image: "junpei.png",
+        text: "Denger-denger lo habis gendong teman-teman sekelompok lo yang beban itu ya? Gila, the real MVP! Tapi ingat, jangan sampai lo kelelahan sendiri."
+    },
+    {
+        type: "choice",
+        name: "Junpei Iori",
+        image: "junpei.png",
+        question: "Gimana, lo janji bakal terus berpikir positif dan tetap semangat kan?",
+        rejectionCount: 0,
+        choices: [
+            { text: "Iya, aku janji bakal selalu positif!", next: true },
+            {
+                text: "Nggak tau deh, rasanya capek...",
+                rejectTexts: [
+                    "Heeei! Nggak ada kata nolak! Lo protagonis kita, jadi lo wajib janji buat terus semangat! Ayo bilang janji!",
+                    "Ayolah Sandrina! Kalo lo pesimis terus, party kita bisa ikutan down! Plis janji dong, ya? Ya??",
+                    "Haaah... ya udahlah kalo lo emang lagi bener-bener capek. Gua paham kok. Kalo emang gak bisa dipaksa semangat sekarang, seenggaknya janji lo bakal istirahat yang bener. Besok kita mulai lagi dari awal."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Akihiko Sanada",
+        image: "akihiko.png",
+        text: "Kerja bagus, Sandrina. Mengatasi orang-orang beban dan tidak bertanggung jawab itu memang butuh stamina mental yang sangat kuat."
+    },
+    {
+        name: "Akihiko Sanada",
+        image: "akihiko.png",
+        text: "Oh ya, thanks udah puji gw ganteng. Gw emang ganteng, cuman keknya si Arshavin cemburu berat wkwkw."
+    },
+    {
+        type: "choice",
+        name: "Akihiko Sanada",
+        image: "akihiko.png",
+        question: "Pertarunganmu yang sebenarnya baru dimulai. Janji padaku kau nggak akan pernah menyerah pada keadaan?",
+        rejectionCount: 0,
+        choices: [
+            { text: "Tentu, aku janji nggak akan nyerah.", next: true },
+            {
+                text: "Tapi aku pengen nyerah aja...",
+                rejectTexts: [
+                    "Hei! Aku tidak melatihmu untuk jadi pengecut! Kau harus berjanji padaku untuk terus berjuang!",
+                    "Alasan lelah tidak kuterima! Kau punya potensi luar biasa. Tegakkan kepalamu dan berjanji sekarang!",
+                    "...Ternyata kau memang sudah mencapai batasmu hari ini. Maaf kalau aku terlalu menekan. Petarung terhebat pun butuh waktu mundur untuk memulihkan lukanya. Pulihkan dirimu, Sandrina."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Shinjiro Aragaki",
+        image: "shinjiro.png",
+        text: "...Tch. Selamat ulang tahun. Berhentilah memaksakan diri buat orang lain sampai kau sendiri yang menderita, bodoh!"
+    },
+    {
+        name: "Shinjiro Aragaki",
+        image: "shinjiro.png",
+        text: "Aku benci melihatmu hancur cuma karena ngerjain tugas teman-temanmu yang nggak tahu diri itu. Jangan mau jadi pahlawan kesiangan."
+    },
+    {
+        type: "choice",
+        name: "Shinjiro Aragaki",
+        image: "shinjiro.png",
+        question: "Dan berhenti mencabuti kukumu saat stres! Janji kau nggak akan menyakiti dirimu sendiri dengan cabut kuku lagi?",
+        rejectionCount: 0,
+        choices: [
+            { text: "Iya, aku janji nggak bakal cabut kuku lagi.", next: true },
+            {
+                text: "Tapi kan refleks kalau lagi panik...",
+                rejectTexts: [
+                    "Jangan keras kepala! Jarimu bisa infeksi dan luka, bodoh! Cepat janji padaku sekarang!",
+                    "Dengar, aku nggak akan membiarkanmu merusak dirimu sendiri. Hentikan kebiasaan jelek itu. Janji!",
+                    "Terserah kau saja... Tapi kalau kulihat kukumu berdarah lagi, aku sendiri yang akan membalut jarimu sampai kau nggak bisa menggerakkannya. Tolong, sayangi dirimu sendiri."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Makoto Yuki",
+        image: "makoto.png",
+        text: "Selamat ulang tahun, Sandrina. Kau sudah bekerja sangat keras untuk menanggung semuanya sendirian."
+    },
+    {
+        type: "choice",
+        name: "Makoto Yuki",
+        image: "makoto.png",
+        question: "Berjanjilah padaku untuk lebih menjaga diri sendiri dan beristirahat jika kau merasa lelah.",
+        rejectionCount: 0,
+        choices: [
+            { text: "Baik, aku janji bakal jaga diri.", next: true },
+            {
+                text: "Tugasnya masih banyak...",
+                rejectTexts: [
+                    "Aku tidak akan membiarkan percakapan ini berlanjut sebelum kau berjanji. Kau harus peduli pada dirimu sendiri.",
+                    "Mengerjakan segalanya sendirian itu tidak akan membawamu ke mana-mana selain kehancuran. Aku tahu rasanya. Janji padaku.",
+                    "...Baiklah, aku mengerti jika sekarang rasanya terlalu berat untuk berjanji. Tapi ketahuilah, pintu asrama selalu terbuka jika kau butuh tempat untuk bersandar."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Koromaru",
+        image: "koromaru.png",
+        text: "Arf! Woof woof! (Selamat ulang tahun! Terus semangat, kehidupan ini baru awal kehidupan, aku akan selalu menggigit siapa saja yang membuatmu kesusahan!)"
+    },
+    {
+        name: "Yukari Takeba",
+        image: "yukari.png",
+        text: "Happy Birthday, Sandrina! Kamu hebat banget bisa ngadepin semua masalah dan ngemonitor teman-temanmu yang beban itu sendirian!"
+    },
+    {
+        type: "choice",
+        name: "Yukari Takeba",
+        image: "yukari.png",
+        question: "Tolong jangan bikin dirimu menderita demi orang lain. Janji ya, kamu bakal mulai mencintai dirimu sendiri?",
+        rejectionCount: 0,
+        choices: [
+            { text: "Janji, aku bakal belajar mencintai diriku.", next: true },
+            {
+                text: "Kayaknya susah deh...",
+                rejectTexts: [
+                    "Ihhh Sandrina! Gak mau tau, pokoknya harus janji! Masa sama diri sendiri aja gak sayang? Ayo pencet janji!",
+                    "Gak lucu tau memaksakan diri terus! Kamu itu berharga! Ayo bilang iya dan janji sama aku sekarang!",
+                    "Aduh... ngelihat kamu sehancur ini bikin aku sedih banget. Yaudah, untuk sekarang nggak perlu janji. Tapi aku mohon, tolong jangan lupakan kalau banyak orang yang sayang sama kamu, termasuk aku."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Arshavin",
+        image: "arshavin.png",
+        text: "San... dengerin kata mereka, ya. Semuanya di sini bener-bener happy hari ini buat ngerayain hari spesialmu."
+    },
+    {
+        name: "Arshavin",
+        image: "arshavin.png",
+        text: "Mulai sekarang, jangan memaksakan diri lagi buat orang-orang beban itu. Kamu bukan robot, kamu juga butuh istirahat."
+    },
+    {
+        name: "Arshavin",
+        image: "arshavin.png",
+        text: "Perjalanan kita masih sangat panjang, jangan pernah lelah dan putus asa. Kehidupan ini baru awal kehidupan."
+    },
+    {
+        type: "choice",
+        name: "Arshavin",
+        image: "arshavin.png",
+        question: "Janji sama aku, kamu bakal terus bertahan, tetap kuat, dan janji nggak akan pernah nyerah?",
+        rejectionCount: 0,
+        choices: [
+            { text: "Iya Arshavin, aku janji.", next: true },
+            {
+                text: "Aku bener-bener capek...",
+                rejectTexts: [
+                    "Aku tau kamu capek, San. Tapi aku nggak bakal biarin kamu nyerah di sini. Ayo klik janji, aku yakin kamu kuat ngelewatin semuanya.",
+                    "San, please... dengerin aku. Kamu nggak sendirian, ada aku di sini. Aku mohon, janjilah buat bertahan.",
+                    "Ya ampun... rasanya sesak banget denger kamu bilang gitu. San, kalau hari ini emang udah terlalu berat, gapapa buat berhenti sejenak. Aku akan tetep di sini meluk kamu, dengerin kamu, sampai kamu siap buat senyum lagi."
+                ]
+            }
+        ]
+    },
+    {
+        name: "Arshavin",
+        image: "arshavin.png",
+        text: "Selamat ulang tahun yang ke-16, Sandrina. Semoga sehat selalu. Oh ya, ada beberapa surat dari mereka yang nggak bisa datang hari ini..."
+    }
+];
+
+const letters = [
+    "Untuk Sandrina...\n\nSelamat ulang tahun. Maaf aku tidak bisa hadir karena ada urusan penting Kirijo Group yang mendesak. Tetaplah menjadi sosok yang kuat dan elegan dalam menghadapi apapun.\n\n- Mitsuru Kirijo (Persona 3)",
+    "Selamat ulang tahun yang ke-16, Sandrina-san.\n\nSistemku mendeteksi bahwa kamu adalah keberadaan yang sangat berharga. Meski ragaku tidak di sana, aku akan selalu melindungimu dari jauh.\n\n- Aigis (Persona 3)",
+    "Wabby Wabbo!\n\nHappy birthday! I planted some extra sunflowers for your front yard! But watch out for the zombies, I think I saw one wearing a party hat... Wabby Wabbo!\n\n- Crazy Dave (Plants vs. Zombies)",
+    "Happy 16th Birthday, Sandrina!\n\nIngat, kerja sama adalah kunci segalanya. Kalau kita berdua bisa memperbaiki pernikahan kita setelah diubah jadi boneka kayu dan tanah liat, kamu pasti bisa melewati rintangan apa pun!\n\n- Cody & May (It Takes Two)",
+    "Selamat ulang tahun.\n\nTetaplah rasional dan logis dalam menyusun jalan hidupmu, tapi pastikan setiap langkahmu memiliki tujuan yang pasti.\n\n- Mio Hudson (Split Fiction)",
+    "Iya bener! Biarkan imajinasimu meliar! Semoga hidupmu penuh sihir dan keajaiban yang menyenangkan! Happy birthday!!\n\n- Zoe Foster (Split Fiction)",
+    "Tatakae... Selamat ulang tahun, Sandrina.\n\nDunia ini memang kejam, tapi juga sangat indah. Teruslah maju dan berjuang untuk kebebasanmu sendiri. Jangan biarkan siapapun merebutnya darimu.\n\n- Eren Yeager (Attack on Titan)",
+    "Selamat ulang tahun, Sandrina.\n\nSelama kau memiliki seseorang yang berharga untuk dilindungi, kau akan menjadi sangat kuat. Tolong, jaga dirimu baik-baik.\n\n- Mikasa Ackerman (Attack on Titan)",
+    "SIUUUU!\n\nHappy birthday, Sandrina! Keep working hard, believe in yourself, and always aim for the top! Your hard work will pay off!\n\n- Cristiano Ronaldo (Sepak Bola)",
+    "Mamma mia!\n\nHappy 16th Birthday! It's-a me, Mario! Keep jumping over those obstacles, woohoo! Here's a 1-Up Mushroom for you!\n\n- Mario (Super Mario Bros.)",
+    "You have survived another year. Good.\n\nDo not let the burdens of others break your focus. Be better. Stay strong. Happy birthday, Sandrina.\n\n- Kratos (God of War)",
+    "Happy Birthday, kid.\n\nThis world ain't easy, and people will test you. But you're strong. Take care of yourself out there, alright? Don't let 'em break you.\n\n- Arthur Morgan (Red Dead Redemption 2)",
+    "San, ini aku lagi.\n\nAku cuma mau bilang kalau aku beruntung banget bisa kenal dan ada di sampingmu. Tolong jaga dirimu baik-baik, jangan pernah menyerah.\n\nI love you.\n- Arshavin"
+];
+
+const speakerNameEl = document.getElementById('speaker-name');
+const dialogueTextEl = document.getElementById('dialogue-text');
+const characterSpriteEl = document.getElementById('character-sprite');
+const nextIndicator = document.getElementById('next-indicator');
+const dialogueBoxEl = document.getElementById('dialogue-box');
+const choiceContainer = document.getElementById('choice-container');
+const letterContentEl = document.getElementById('letter-content');
+const letterIndicatorEl = document.getElementById('letter-indicator');
+const backBtn = document.getElementById('back-btn');
+
+function updateBackButton() {
+    if (gameState === 'DIALOGUE' && currentLine > 0 && !isChoiceActive) {
+        backBtn.style.display = 'block';
+    } else if (gameState === 'LETTER') {
+        backBtn.style.display = 'block';
+    } else {
+        backBtn.style.display = 'none';
+    }
+}
+
+function renderDialogue(idx) {
+    let currentData = story[idx];
+
+    if (currentData.type === 'choice') {
+        currentData.isResolved = false;
+        currentData.rejectionCount = 0;
+    }
+
+    speakerNameEl.innerHTML = currentData.name;
+
+    if (currentData.image) {
+        characterSpriteEl.src = currentData.image;
+        characterSpriteEl.style.opacity = 1;
+    } else {
+        characterSpriteEl.style.opacity = 0;
+    }
+
+    activeDialogueText = currentData.type === 'choice' ? currentData.question : currentData.text;
+
+    typeWriter(activeDialogueText, () => {
+        if (currentData.type === 'choice') {
+            showChoices(currentData);
+        }
+    });
+    updateBackButton();
+}
+
+function advanceDialogue() {
+    if (isTyping || isChoiceActive) return;
+
+    if (!audioStarted) {
+        bgm.volume = 0.6;
+        bgm.play().catch(()=>{});
+        audioStarted = true;
+    }
+
+    playClick();
+    currentLine++;
+
+    if (currentLine >= story.length) {
+        document.getElementById('fade-black').style.opacity = '1';
+        dialogueTextEl.innerHTML = "...";
+        speakerNameEl.innerHTML = "";
+
+        setTimeout(() => {
+            document.getElementById('game-container').style.display = 'none';
+            let letterScreen = document.getElementById('letter-screen');
+            letterScreen.style.display = 'flex';
+            setTimeout(() => {
+                letterScreen.style.opacity = '1';
+                gameState = 'LETTER';
+                currentLetterIdx = 0;
+                renderLetter(currentLetterIdx);
+            }, 100);
+        }, 1500);
+        return;
+    }
+
+    renderDialogue(currentLine);
+}
+
+function showChoices(choiceData) {
+    isChoiceActive = true;
+    choiceContainer.innerHTML = '';
+    choiceContainer.style.display = 'flex';
+    updateBackButton();
+
+    choiceData.choices.forEach(c => {
+        let btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerText = c.text;
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            playClick();
+            choiceContainer.style.display = 'none';
+            isChoiceActive = false;
+
+            if (c.next) {
+                advanceDialogue();
+            } else {
+                choiceData.rejectionCount += 1;
+                let count = choiceData.rejectionCount;
+
+                if (count <= 2) {
+                    activeDialogueText = c.rejectTexts[count - 1];
+                    speakerNameEl.innerHTML = choiceData.name;
+                    typeWriter(activeDialogueText, () => {
+                        showChoices(choiceData);
+                    });
+                } else {
+                    choiceData.isResolved = true;
+                    activeDialogueText = c.rejectTexts[2];
+                    speakerNameEl.innerHTML = choiceData.name;
+                    typeWriter(activeDialogueText, () => {
+                        nextIndicator.style.display = 'block';
+                        updateBackButton();
+                    });
+                }
+            }
+        };
+        choiceContainer.appendChild(btn);
+    });
+}
+
+function typeWriter(text, callback) {
+    isTyping = true;
+    dialogueTextEl.innerHTML = '';
+    nextIndicator.style.display = 'none';
+
+    let i = 0;
+    clearInterval(typeInterval);
+    typeInterval = setInterval(() => {
+        dialogueTextEl.innerHTML += text.charAt(i);
+        dialogueTextEl.scrollTop = dialogueTextEl.scrollHeight;
+        i++;
+        if (i >= text.length) {
+            clearInterval(typeInterval);
+            isTyping = false;
+            if (callback) {
+                callback();
+            } else {
+                nextIndicator.style.display = 'block';
+            }
+        }
+    }, 18);
+}
+
+function renderLetter(idx) {
+    letterContentEl.innerHTML = '';
+    letterIndicatorEl.style.display = 'none';
+
+    isLetterTyping = true;
+    let text = letters[idx];
+    let i = 0;
+
+    clearInterval(letterInterval);
+    letterInterval = setInterval(() => {
+        letterContentEl.innerHTML += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+            clearInterval(letterInterval);
+            isLetterTyping = false;
+            letterIndicatorEl.style.display = 'block';
+        }
+    }, 18);
+    updateBackButton();
+}
+
+function advanceLetter() {
+    if (isLetterTyping) return;
+    playClick();
+
+    currentLetterIdx++;
+
+    if (currentLetterIdx >= letters.length) {
+        let letterScreen = document.getElementById('letter-screen');
+        letterScreen.style.opacity = '0';
+        backBtn.style.display = 'none';
+
+        setTimeout(() => {
+            letterScreen.style.display = 'none';
+            let endingScreen = document.getElementById('ending-screen');
+            endingScreen.style.display = 'flex';
+            setTimeout(() => {
+                endingScreen.style.opacity = '1';
+                gameState = 'ENDING';
+            }, 100);
+        }, 1500);
+        return;
+    }
+
+    renderLetter(currentLetterIdx);
+}
+
+function goBack(e) {
+    e.stopPropagation();
+    if (isTyping || isLetterTyping) return;
+    playClick();
+
+    if (gameState === 'DIALOGUE') {
+        if (currentLine > 0) {
+            currentLine--;
+            renderDialogue(currentLine);
+        }
+    } else if (gameState === 'LETTER') {
+        if (currentLetterIdx > 0) {
+            currentLetterIdx--;
+            renderLetter(currentLetterIdx);
+        } else {
+            let letterScreen = document.getElementById('letter-screen');
+            letterScreen.style.opacity = '0';
+
+            setTimeout(() => {
+                letterScreen.style.display = 'none';
+                document.getElementById('game-container').style.display = 'flex';
+                document.getElementById('fade-black').style.opacity = '0';
+                gameState = 'DIALOGUE';
+                currentLine = story.length - 1;
+                renderDialogue(currentLine);
+            }, 500);
+        }
+    }
+}
+</script>
+</body>
+</html>
