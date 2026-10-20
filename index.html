@@ -23,7 +23,6 @@ body, html {
     user-select: none;
 }
 
-/* LAYAR LOADING */
 #loading-screen {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -78,7 +77,6 @@ body, html {
     z-index: 1;
 }
 
-/* PEMBUNGKUS KARAKTER & DIALOG */
 #bottom-ui {
     position: relative;
     width: 100%;
@@ -134,7 +132,6 @@ body, html {
     z-index: 5;
 }
 
-/* NAVIGASI KANAN ATAS DIALOG (< >) */
 .dialog-nav-container {
     position: absolute;
     top: -24px;
@@ -262,7 +259,6 @@ body, html {
     pointer-events: none;
 }
 
-/* NAVIGASI KANAN ATAS SURAT (< >) DI ATAS KERTAS */
 .letter-nav-container {
     position: absolute;
     top: -45px;
@@ -329,7 +325,6 @@ body, html {
 <audio id="bgm" src="lagu.mp3" loop></audio>
 <audio id="sfx-click" src="https://www.myinstants.com/media/sounds/click.mp3"></audio>
 
-<!-- LAYAR LOADING -->
 <div id="loading-screen">
     <div id="loading-text">Mempersiapkan Kejutan... <span id="loading-percent">0%</span></div>
     <div class="loading-bar-container">
@@ -337,7 +332,6 @@ body, html {
     </div>
 </div>
 
-<!-- KOTAK GAME UTAMA -->
 <div id="game-container">
     <div id="overlay"></div>
     <div id="choice-container"></div>
@@ -346,7 +340,7 @@ body, html {
         <img id="character-sprite" src="" alt="">
         <div id="dialogue-box">
             <div id="speaker-name">Narator</div>
-            <!-- Tombol Navigasi Dialog < > -->
+
             <div class="dialog-nav-container">
                 <button id="dialog-back" class="nav-btn" onclick="goBack(event)"><span>◀</span></button>
                 <button id="dialog-next" class="nav-btn" onclick="advanceDialogue(event)"><span>▶</span></button>
@@ -358,10 +352,9 @@ body, html {
     <div id="fade-black"></div>
 </div>
 
-<!-- KOTAK SURAT -->
 <div id="letter-screen">
     <div class="letter-paper">
-        <!-- Tombol Navigasi Surat < > -->
+
         <div class="letter-nav-container">
             <button id="letter-back" class="letter-nav-btn" onclick="goBack(event)">◀</button>
             <button id="letter-next" class="letter-nav-btn" onclick="advanceLetter(event)">▶</button>
@@ -375,7 +368,6 @@ body, html {
 </div>
 
 <script>
-// --- SISTEM PRELOADER ASSET ---
 const assetsToLoad = [
     'background.png',
     'junpei.png',
@@ -395,7 +387,7 @@ function preloadAssets() {
         finishLoading();
         return;
     }
-    
+
     assetsToLoad.forEach(src => {
         const img = new Image();
         img.onload = () => updateLoadingProgress();
@@ -412,7 +404,7 @@ function updateLoadingProgress() {
     let percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
     document.getElementById('loading-percent').innerText = percent + "%";
     document.getElementById('loading-bar').style.width = percent + "%";
-    
+
     if (loadedAssets === assetsToLoad.length) {
         setTimeout(finishLoading, 400);
     }
@@ -429,7 +421,6 @@ function finishLoading() {
 }
 
 window.onload = preloadAssets;
-// ---------------------------------
 
 const bgm = document.getElementById('bgm');
 const clickSfx = document.getElementById('sfx-click');
@@ -465,25 +456,12 @@ function playClick() {
 
 function updateNavButtons() {
     if (gameState === 'DIALOGUE') {
-        if (currentLine > 0 && !isChoiceActive) {
-            dialogBackBtn.style.display = 'block';
-        } else {
-            dialogBackBtn.style.display = 'none';
-        }
-        
-        if (!isTyping && !isChoiceActive && (story[currentLine].type !== 'choice' || story[currentLine].isResolved)) {
-            dialogNextBtn.style.display = 'block';
-        } else {
-            dialogNextBtn.style.display = 'none';
-        }
+        const currentData = story[currentLine];
+        dialogBackBtn.style.display = currentLine > 0 && Boolean(currentData) && !isChoiceActive ? 'block' : 'none';
+        dialogNextBtn.style.display = Boolean(currentData) && !isTyping && !isChoiceActive && (currentData.type !== 'choice' || currentData.isResolved) ? 'block' : 'none';
     } else if (gameState === 'LETTER') {
         letterBackBtn.style.display = 'block';
-        
-        if (!isLetterTyping) {
-            letterNextBtn.style.display = 'block';
-        } else {
-            letterNextBtn.style.display = 'none';
-        }
+        letterNextBtn.style.display = !isLetterTyping ? 'block' : 'none';
     }
 }
 
@@ -690,22 +668,29 @@ const letters = [
 ];
 
 function renderDialogue(idx) {
-    let currentData = story[idx];
-    
+    const currentData = story[idx];
+    if (!currentData) {
+        isTyping = false;
+        isChoiceActive = false;
+        dialogBackBtn.style.display = 'none';
+        dialogNextBtn.style.display = 'none';
+        return;
+    }
+
     if (currentData.type === 'choice') {
         currentData.isResolved = false;
         currentData.rejectionCount = 0;
     }
-    
+
     speakerNameEl.innerHTML = currentData.name;
-    
+
     if (currentData.image) {
         characterSpriteEl.src = currentData.image;
         characterSpriteEl.style.opacity = 1;
     } else {
         characterSpriteEl.style.opacity = 0;
     }
-    
+
     activeDialogueText = currentData.type === 'choice' ? currentData.question : currentData.text;
 
     updateNavButtons();
@@ -719,13 +704,13 @@ function renderDialogue(idx) {
 function advanceDialogue(e) {
     if (e) e.stopPropagation();
     if (isTyping || isChoiceActive) return; 
-    
+
     if (!audioStarted) {
         bgm.volume = 0.6;
         bgm.play().catch(()=>{});
         audioStarted = true;
     }
-    
+
     playClick();
     currentLine++;
 
@@ -734,7 +719,7 @@ function advanceDialogue(e) {
         dialogueTextEl.innerHTML = "...";
         speakerNameEl.innerHTML = "";
         updateNavButtons();
-        
+
         setTimeout(() => {
             document.getElementById('game-container').style.display = 'none';
             let letterScreen = document.getElementById('letter-screen');
@@ -757,7 +742,7 @@ function showChoices(choiceData) {
     choiceContainer.innerHTML = '';
     choiceContainer.style.display = 'flex';
     updateNavButtons(); 
-    
+
     choiceData.choices.forEach(c => {
         let btn = document.createElement('button');
         btn.className = 'choice-btn';
@@ -767,7 +752,7 @@ function showChoices(choiceData) {
             playClick();
             choiceContainer.style.display = 'none';
             isChoiceActive = false;
-            
+
             if (c.next) {
                 advanceDialogue();
             } else {
@@ -798,7 +783,7 @@ function typeWriter(text, callback) {
     isTyping = true;
     dialogueTextEl.innerHTML = '';
     updateNavButtons();
-    
+
     let i = 0;
     clearInterval(typeInterval);
     typeInterval = setInterval(() => {
@@ -818,10 +803,10 @@ function renderLetter(idx) {
     letterContentEl.innerHTML = '';
     isLetterTyping = true;
     updateNavButtons();
-    
+
     let text = letters[idx];
     let i = 0;
-    
+
     clearInterval(letterInterval);
     letterInterval = setInterval(() => {
         letterContentEl.innerHTML += text.charAt(i);
@@ -837,13 +822,13 @@ function renderLetter(idx) {
 function advanceLetter(e) {
     if (e) e.stopPropagation();
     if (isLetterTyping) return; 
-    
+
     if (!audioStarted) {
         bgm.volume = 0.6;
         bgm.play().catch(()=>{});
         audioStarted = true;
     }
-    
+
     playClick();
     currentLetterIdx++;
 
@@ -851,7 +836,7 @@ function advanceLetter(e) {
         let letterScreen = document.getElementById('letter-screen');
         letterScreen.style.opacity = '0';
         updateNavButtons();
-        
+
         setTimeout(() => {
             letterScreen.style.display = 'none';
             let endingScreen = document.getElementById('ending-screen');
@@ -870,13 +855,13 @@ function advanceLetter(e) {
 function goBack(e) {
     if (e) e.stopPropagation();
     if (isTyping || isLetterTyping) return; 
-    
+
     if (!audioStarted) {
         bgm.volume = 0.6;
         bgm.play().catch(()=>{});
         audioStarted = true;
     }
-    
+
     playClick();
 
     if (gameState === 'DIALOGUE') {
@@ -891,7 +876,7 @@ function goBack(e) {
         } else {
             let letterScreen = document.getElementById('letter-screen');
             letterScreen.style.opacity = '0';
-            
+
             setTimeout(() => {
                 letterScreen.style.display = 'none';
                 document.getElementById('game-container').style.display = 'flex';
