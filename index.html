@@ -17,6 +17,7 @@
 body, html {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     font-family: 'Jost', sans-serif;
     background-color: #000;
     overflow: hidden;
@@ -35,21 +36,26 @@ body, html {
     color: #66B2FF;
     transition: opacity 0.5s ease-in-out;
 }
+
 #loading-text {
     font-size: 2rem;
     font-weight: bold;
     letter-spacing: 2px;
     margin-bottom: 10px;
+    text-align: center;
     animation: blink 1s infinite;
 }
+
 .loading-bar-container {
     width: 300px;
+    max-width: 80vw;
     height: 10px;
     background: #002b5e;
     border-radius: 5px;
     overflow: hidden;
     border: 1px solid #66B2FF;
 }
+
 #loading-bar {
     width: 0%;
     height: 100%;
@@ -61,7 +67,8 @@ body, html {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background-image: url('background.png'); 
+    height: 100dvh;
+    background-image: url('background.png');
     background-size: cover;
     background-position: center;
     display: none;
@@ -91,11 +98,11 @@ body, html {
     height: 55vh;
     max-width: 90vw;
     object-fit: contain;
-    object-position: bottom center; 
-    margin-bottom: -15px; 
+    object-position: bottom center;
+    margin-bottom: -15px;
     z-index: 3;
     transition: opacity 0.3s ease-in-out;
-    filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.8));
     opacity: 0;
 }
 
@@ -154,13 +161,15 @@ body, html {
     transition: all 0.2s;
     display: none;
 }
+
 .nav-btn:hover {
     background-color: #66B2FF;
     color: #000;
 }
+
 .nav-btn span {
     display: inline-block;
-    transform: skewX(12deg); 
+    transform: skewX(12deg);
 }
 
 #dialogue-text {
@@ -172,6 +181,7 @@ body, html {
     flex-grow: 1;
     padding-right: 15px;
 }
+
 #dialogue-text::-webkit-scrollbar { width: 6px; }
 #dialogue-text::-webkit-scrollbar-thumb { background: #66B2FF; border-radius: 3px; }
 
@@ -277,10 +287,11 @@ body, html {
     font-weight: bold;
     cursor: pointer;
     border-radius: 6px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
     transition: all 0.2s;
     display: none;
 }
+
 .letter-nav-btn:hover {
     background-color: #e63946;
     color: #fff;
@@ -318,6 +329,22 @@ body, html {
     background-color: #fff;
     object-fit: contain;
 }
+
+@media (max-width: 600px) {
+    #dialogue-box {
+        padding: 1.4rem 1.2rem;
+    }
+    #dialogue-text {
+        font-size: 1.1rem;
+    }
+    #speaker-name {
+        font-size: 1.1rem;
+        padding: 5px 18px;
+    }
+    #loading-text {
+        font-size: 1.4rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -340,7 +367,6 @@ body, html {
         <img id="character-sprite" src="" alt="">
         <div id="dialogue-box">
             <div id="speaker-name">Narator</div>
-
             <div class="dialog-nav-container">
                 <button id="dialog-back" class="nav-btn" onclick="goBack(event)"><span>◀</span></button>
                 <button id="dialog-next" class="nav-btn" onclick="advanceDialogue(event)"><span>▶</span></button>
@@ -354,7 +380,6 @@ body, html {
 
 <div id="letter-screen">
     <div class="letter-paper">
-
         <div class="letter-nav-container">
             <button id="letter-back" class="letter-nav-btn" onclick="goBack(event)">◀</button>
             <button id="letter-next" class="letter-nav-btn" onclick="advanceLetter(event)">▶</button>
@@ -381,6 +406,7 @@ const assetsToLoad = [
 ];
 
 let loadedAssets = 0;
+let loadingFinished = false;
 
 function preloadAssets() {
     if (assetsToLoad.length === 0) {
@@ -390,10 +416,10 @@ function preloadAssets() {
 
     assetsToLoad.forEach(src => {
         const img = new Image();
-        img.onload = () => updateLoadingProgress();
+        img.onload = updateLoadingProgress;
         img.onerror = () => {
             console.warn("Gagal memuat gambar: " + src + ". Pastikan nama file persis sama!");
-            updateLoadingProgress(); 
+            updateLoadingProgress();
         };
         img.src = src;
     });
@@ -401,8 +427,8 @@ function preloadAssets() {
 
 function updateLoadingProgress() {
     loadedAssets++;
-    let percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
-    document.getElementById('loading-percent').innerText = percent + "%";
+    const percent = Math.floor((loadedAssets / assetsToLoad.length) * 100);
+    document.getElementById('loading-percent').textContent = percent + "%";
     document.getElementById('loading-bar').style.width = percent + "%";
 
     if (loadedAssets === assetsToLoad.length) {
@@ -411,16 +437,19 @@ function updateLoadingProgress() {
 }
 
 function finishLoading() {
+    if (loadingFinished) return;
+    loadingFinished = true;
+
     const loader = document.getElementById('loading-screen');
     loader.style.opacity = '0';
     setTimeout(() => {
         loader.style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
-        renderDialogue(currentLine); 
+        renderDialogue(currentLine);
     }, 400);
 }
 
-window.onload = preloadAssets;
+window.addEventListener('load', preloadAssets);
 
 const bgm = document.getElementById('bgm');
 const clickSfx = document.getElementById('sfx-click');
@@ -428,15 +457,15 @@ const clickSfx = document.getElementById('sfx-click');
 let audioStarted = false;
 let currentLine = 0;
 let isTyping = false;
-let typeInterval;
+let typeInterval = null;
 let isChoiceActive = false;
-let activeDialogueText = "";
+let isTransitioning = false;
 
 let currentLetterIdx = 0;
 let isLetterTyping = false;
-let letterInterval;
+let letterInterval = null;
 
-let gameState = 'DIALOGUE'; 
+let gameState = 'DIALOGUE';
 
 const dialogBackBtn = document.getElementById('dialog-back');
 const dialogNextBtn = document.getElementById('dialog-next');
@@ -448,20 +477,40 @@ const dialogueTextEl = document.getElementById('dialogue-text');
 const characterSpriteEl = document.getElementById('character-sprite');
 const choiceContainer = document.getElementById('choice-container');
 const letterContentEl = document.getElementById('letter-content');
+const fadeBlackEl = document.getElementById('fade-black');
+const gameContainerEl = document.getElementById('game-container');
+const letterScreenEl = document.getElementById('letter-screen');
+const endingScreenEl = document.getElementById('ending-screen');
+
+function startAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+    bgm.volume = 0.6;
+    bgm.play().catch(() => {});
+}
 
 function playClick() {
     clickSfx.currentTime = 0;
-    clickSfx.play().catch(()=>{});
+    clickSfx.play().catch(() => {});
 }
 
 function updateNavButtons() {
     if (gameState === 'DIALOGUE') {
-        const currentData = story[currentLine];
-        dialogBackBtn.style.display = currentLine > 0 && Boolean(currentData) && !isChoiceActive ? 'block' : 'none';
-        dialogNextBtn.style.display = Boolean(currentData) && !isTyping && !isChoiceActive && (currentData.type !== 'choice' || currentData.isResolved) ? 'block' : 'none';
+        const data = story[currentLine];
+
+        dialogBackBtn.style.display = (currentLine > 0 && !isChoiceActive && !isTransitioning) ? 'block' : 'none';
+
+        const canNext = data && !isTyping && !isChoiceActive && !isTransitioning &&
+            (data.type !== 'choice' || data.isResolved);
+        dialogNextBtn.style.display = canNext ? 'block' : 'none';
     } else if (gameState === 'LETTER') {
-        letterBackBtn.style.display = 'block';
-        letterNextBtn.style.display = !isLetterTyping ? 'block' : 'none';
+        letterBackBtn.style.display = isTransitioning ? 'none' : 'block';
+        letterNextBtn.style.display = (!isLetterTyping && !isTransitioning) ? 'block' : 'none';
+    } else {
+        dialogBackBtn.style.display = 'none';
+        dialogNextBtn.style.display = 'none';
+        letterBackBtn.style.display = 'none';
+        letterNextBtn.style.display = 'none';
     }
 }
 
@@ -478,12 +527,12 @@ const story = [
     },
     {
         name: "Junpei Iori",
-        image: "junpei.png", 
+        image: "junpei.png",
         text: "Yo, Sandrina! Selamat ulang tahun ke-16 hari ini! Semoga sehat selalu ya! Lo beneran keren abis udah bertahan sejauh ini."
     },
     {
         name: "Junpei Iori",
-        image: "junpei.png", 
+        image: "junpei.png",
         text: "Denger-denger lo habis gendong teman-teman sekelompok lo yang beban itu ya? Gila, the real MVP! Tapi ingat, jangan sampai lo kelelahan sendiri."
     },
     {
@@ -494,8 +543,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya, aku janji bakal selalu positif!", next: true },
-            { 
-                text: "Nggak tau deh, rasanya capek...", 
+            {
+                text: "Nggak tau deh, rasanya capek...",
                 rejectTexts: [
                     "Heeei! Nggak ada kata nolak! Lo protagonis kita, jadi lo wajib janji buat terus semangat! Ayo bilang janji!",
                     "Ayolah Sandrina! Kalo lo pesimis terus, party kita bisa ikutan down! Plis janji dong, ya? Ya??",
@@ -522,8 +571,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Tentu, aku janji nggak akan nyerah.", next: true },
-            { 
-                text: "Tapi aku pengen nyerah aja...", 
+            {
+                text: "Tapi aku pengen nyerah aja...",
                 rejectTexts: [
                     "Hei! Aku tidak melatihmu untuk jadi pengecut! Kau harus berjanji padaku untuk terus berjuang!",
                     "Alasan lelah tidak kuterima! Kau punya potensi luar biasa. Tegakkan kepalamu dan berjanji sekarang!",
@@ -550,8 +599,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya, aku janji nggak bakal cabut kuku lagi.", next: true },
-            { 
-                text: "Tapi kan refleks kalau lagi panik...", 
+            {
+                text: "Tapi kan refleks kalau lagi panik...",
                 rejectTexts: [
                     "Jangan keras kepala! Jarimu bisa infeksi dan luka, bodoh! Cepat janji padaku sekarang!",
                     "Dengar, aku nggak akan membiarkanmu merusak dirimu sendiri. Hentikan kebiasaan jelek itu. Janji!",
@@ -573,8 +622,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Baik, aku janji bakal jaga diri.", next: true },
-            { 
-                text: "Tugasnya masih banyak...", 
+            {
+                text: "Tugasnya masih banyak...",
                 rejectTexts: [
                     "Aku tidak akan membiarkan percakapan ini berlanjut sebelum kau berjanji. Kau harus peduli pada dirimu sendiri.",
                     "Mengerjakan segalanya sendirian itu tidak akan membawamu ke mana-mana selain kehancuran. Aku tahu rasanya. Janji padaku.",
@@ -601,8 +650,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Janji, aku bakal belajar mencintai diriku.", next: true },
-            { 
-                text: "Kayaknya susah deh...", 
+            {
+                text: "Kayaknya susah deh...",
                 rejectTexts: [
                     "Ihhh Sandrina! Gak mau tau, pokoknya harus janji! Masa sama diri sendiri aja gak sayang? Ayo pencet janji!",
                     "Gak lucu tau memaksakan diri terus! Kamu itu berharga! Ayo bilang iya dan janji sama aku sekarang!",
@@ -634,8 +683,8 @@ const story = [
         rejectionCount: 0,
         choices: [
             { text: "Iya Arshavin, aku janji.", next: true },
-            { 
-                text: "Aku bener-bener capek...", 
+            {
+                text: "Aku bener-bener capek...",
                 rejectTexts: [
                     "Aku tau kamu capek, San. Tapi aku nggak bakal biarin kamu nyerah di sini. Ayo klik janji, aku yakin kamu kuat ngelewatin semuanya.",
                     "San, please... dengerin aku. Kamu nggak sendirian, ada aku di sini. Aku mohon, janjilah buat bertahan.",
@@ -667,34 +716,47 @@ const letters = [
     "San, ini aku lagi.\n\nAku cuma mau bilang kalau aku beruntung banget bisa kenal dan ada di sampingmu. Tolong jaga dirimu baik-baik, jangan pernah menyerah.\n\nI love you.\n- Arshavin"
 ];
 
-function renderDialogue(idx) {
-    const currentData = story[idx];
-    if (!currentData) {
-        isTyping = false;
-        isChoiceActive = false;
-        dialogBackBtn.style.display = 'none';
-        dialogNextBtn.style.display = 'none';
+function showSprite(data) {
+    if (!data.image) {
+        characterSpriteEl.style.opacity = 0;
         return;
     }
+
+    const current = characterSpriteEl.getAttribute('src') || '';
+    if (current === data.image) {
+        characterSpriteEl.style.opacity = 1;
+        return;
+    }
+
+    characterSpriteEl.style.opacity = 0;
+
+    const img = new Image();
+    const apply = () => {
+        if (gameState !== 'DIALOGUE' || story[currentLine] !== data) return;
+        characterSpriteEl.src = data.image;
+        characterSpriteEl.style.opacity = 1;
+    };
+    img.onload = apply;
+    img.onerror = apply;
+    img.src = data.image;
+}
+
+function renderDialogue(idx) {
+    const currentData = story[idx];
+    if (!currentData) return;
 
     if (currentData.type === 'choice') {
         currentData.isResolved = false;
         currentData.rejectionCount = 0;
     }
 
-    speakerNameEl.innerHTML = currentData.name;
+    speakerNameEl.textContent = currentData.name;
+    showSprite(currentData);
 
-    if (currentData.image) {
-        characterSpriteEl.src = currentData.image;
-        characterSpriteEl.style.opacity = 1;
-    } else {
-        characterSpriteEl.style.opacity = 0;
-    }
-
-    activeDialogueText = currentData.type === 'choice' ? currentData.question : currentData.text;
+    const text = currentData.type === 'choice' ? currentData.question : currentData.text;
 
     updateNavButtons();
-    typeWriter(activeDialogueText, () => {
+    typeWriter(text, () => {
         if (currentData.type === 'choice') {
             showChoices(currentData);
         }
@@ -703,34 +765,32 @@ function renderDialogue(idx) {
 
 function advanceDialogue(e) {
     if (e) e.stopPropagation();
-    if (isTyping || isChoiceActive) return; 
+    if (gameState !== 'DIALOGUE' || isTyping || isChoiceActive || isTransitioning) return;
 
-    if (!audioStarted) {
-        bgm.volume = 0.6;
-        bgm.play().catch(()=>{});
-        audioStarted = true;
-    }
-
+    startAudio();
     playClick();
     currentLine++;
 
     if (currentLine >= story.length) {
-        document.getElementById('fade-black').style.opacity = '1';
-        dialogueTextEl.innerHTML = "...";
-        speakerNameEl.innerHTML = "";
+        isTransitioning = true;
         updateNavButtons();
 
+        clearInterval(typeInterval);
+        fadeBlackEl.style.opacity = '1';
+        dialogueTextEl.textContent = "...";
+        speakerNameEl.textContent = "";
+
         setTimeout(() => {
-            document.getElementById('game-container').style.display = 'none';
-            let letterScreen = document.getElementById('letter-screen');
-            letterScreen.style.display = 'flex';
+            gameContainerEl.style.display = 'none';
+            letterScreenEl.style.display = 'flex';
             setTimeout(() => {
-                letterScreen.style.opacity = '1';
+                letterScreenEl.style.opacity = '1';
                 gameState = 'LETTER';
+                isTransitioning = false;
                 currentLetterIdx = 0;
                 renderLetter(currentLetterIdx);
-            }, 50); 
-        }, 1000); 
+            }, 50);
+        }, 1000);
         return;
     }
 
@@ -741,38 +801,36 @@ function showChoices(choiceData) {
     isChoiceActive = true;
     choiceContainer.innerHTML = '';
     choiceContainer.style.display = 'flex';
-    updateNavButtons(); 
+    updateNavButtons();
 
     choiceData.choices.forEach(c => {
-        let btn = document.createElement('button');
+        const btn = document.createElement('button');
         btn.className = 'choice-btn';
-        btn.innerText = c.text;
+        btn.textContent = c.text;
         btn.onclick = (e) => {
-            e.stopPropagation(); 
+            e.stopPropagation();
             playClick();
             choiceContainer.style.display = 'none';
             isChoiceActive = false;
 
             if (c.next) {
                 advanceDialogue();
-            } else {
-                choiceData.rejectionCount += 1;
-                let count = choiceData.rejectionCount;
+                return;
+            }
 
-                if (count <= 2) {
-                    activeDialogueText = c.rejectTexts[count - 1];
-                    speakerNameEl.innerHTML = choiceData.name;
-                    typeWriter(activeDialogueText, () => {
-                        showChoices(choiceData);
-                    });
-                } else {
-                    choiceData.isResolved = true;
-                    activeDialogueText = c.rejectTexts[2];
-                    speakerNameEl.innerHTML = choiceData.name;
-                    typeWriter(activeDialogueText, () => {
-                        updateNavButtons();
-                    });
-                }
+            choiceData.rejectionCount += 1;
+            const count = choiceData.rejectionCount;
+            speakerNameEl.textContent = choiceData.name;
+
+            if (count <= 2) {
+                typeWriter(c.rejectTexts[count - 1], () => {
+                    showChoices(choiceData);
+                });
+            } else {
+                choiceData.isResolved = true;
+                typeWriter(c.rejectTexts[2], () => {
+                    updateNavButtons();
+                });
             }
         };
         choiceContainer.appendChild(btn);
@@ -781,13 +839,13 @@ function showChoices(choiceData) {
 
 function typeWriter(text, callback) {
     isTyping = true;
-    dialogueTextEl.innerHTML = '';
+    dialogueTextEl.textContent = '';
     updateNavButtons();
 
     let i = 0;
     clearInterval(typeInterval);
     typeInterval = setInterval(() => {
-        dialogueTextEl.innerHTML += text.charAt(i);
+        dialogueTextEl.textContent += text.charAt(i);
         dialogueTextEl.scrollTop = dialogueTextEl.scrollHeight;
         i++;
         if (i >= text.length) {
@@ -796,20 +854,20 @@ function typeWriter(text, callback) {
             updateNavButtons();
             if (callback) callback();
         }
-    }, 18); 
+    }, 18);
 }
 
 function renderLetter(idx) {
-    letterContentEl.innerHTML = '';
+    letterContentEl.textContent = '';
     isLetterTyping = true;
     updateNavButtons();
 
-    let text = letters[idx];
+    const text = letters[idx];
     let i = 0;
 
     clearInterval(letterInterval);
     letterInterval = setInterval(() => {
-        letterContentEl.innerHTML += text.charAt(i);
+        letterContentEl.textContent += text.charAt(i);
         i++;
         if (i >= text.length) {
             clearInterval(letterInterval);
@@ -821,29 +879,25 @@ function renderLetter(idx) {
 
 function advanceLetter(e) {
     if (e) e.stopPropagation();
-    if (isLetterTyping) return; 
+    if (gameState !== 'LETTER' || isLetterTyping || isTransitioning) return;
 
-    if (!audioStarted) {
-        bgm.volume = 0.6;
-        bgm.play().catch(()=>{});
-        audioStarted = true;
-    }
-
+    startAudio();
     playClick();
     currentLetterIdx++;
 
     if (currentLetterIdx >= letters.length) {
-        let letterScreen = document.getElementById('letter-screen');
-        letterScreen.style.opacity = '0';
+        isTransitioning = true;
         updateNavButtons();
+        letterScreenEl.style.opacity = '0';
 
         setTimeout(() => {
-            letterScreen.style.display = 'none';
-            let endingScreen = document.getElementById('ending-screen');
-            endingScreen.style.display = 'flex';
+            letterScreenEl.style.display = 'none';
+            endingScreenEl.style.display = 'flex';
             setTimeout(() => {
-                endingScreen.style.opacity = '1';
+                endingScreenEl.style.opacity = '1';
                 gameState = 'ENDING';
+                isTransitioning = false;
+                updateNavButtons();
             }, 100);
         }, 1500);
         return;
@@ -854,18 +908,13 @@ function advanceLetter(e) {
 
 function goBack(e) {
     if (e) e.stopPropagation();
-    if (isTyping || isLetterTyping) return; 
+    if (isTyping || isLetterTyping || isTransitioning) return;
 
-    if (!audioStarted) {
-        bgm.volume = 0.6;
-        bgm.play().catch(()=>{});
-        audioStarted = true;
-    }
-
+    startAudio();
     playClick();
 
     if (gameState === 'DIALOGUE') {
-        if (currentLine > 0) {
+        if (currentLine > 0 && !isChoiceActive) {
             currentLine--;
             renderDialogue(currentLine);
         }
@@ -874,17 +923,19 @@ function goBack(e) {
             currentLetterIdx--;
             renderLetter(currentLetterIdx);
         } else {
-            let letterScreen = document.getElementById('letter-screen');
-            letterScreen.style.opacity = '0';
+            isTransitioning = true;
+            updateNavButtons();
+            letterScreenEl.style.opacity = '0';
 
             setTimeout(() => {
-                letterScreen.style.display = 'none';
-                document.getElementById('game-container').style.display = 'flex';
-                document.getElementById('fade-black').style.opacity = '0';
+                letterScreenEl.style.display = 'none';
+                gameContainerEl.style.display = 'flex';
+                fadeBlackEl.style.opacity = '0';
                 gameState = 'DIALOGUE';
+                isTransitioning = false;
                 currentLine = story.length - 1;
                 renderDialogue(currentLine);
-            }, 500);
+            }, 1000);
         }
     }
 }
